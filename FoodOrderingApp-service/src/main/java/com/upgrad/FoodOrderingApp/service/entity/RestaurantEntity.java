@@ -3,11 +3,18 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name="restaurant")
+@NamedQueries({
+
+        @NamedQuery(name = "getAllRestaurantsByRating", query = "select q from RestaurantEntity q order by q.customer_rating desc"),
+        @NamedQuery(name = "restaurantByUUID", query = "select q from RestaurantEntity q where q.uuid = :uuid"),
+})
+
 public class RestaurantEntity implements Serializable {
 
     @Id
@@ -33,7 +40,7 @@ public class RestaurantEntity implements Serializable {
 
     @Column(name="customer_rating")
     @NotNull
-    private Float customer_rating;
+    private BigDecimal customer_rating;
 
     @Column(name="average_price_for_two")
     @NotNull
@@ -50,8 +57,21 @@ public class RestaurantEntity implements Serializable {
     @OneToMany(mappedBy = "restaurant", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private List<OrdersEntity> orders = new ArrayList<>();
 
-    @OneToMany(mappedBy = "restaurant_id", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
-    private List<RestaurantCategoryEntity> restaurantCategory = new ArrayList<>();
+   /* @OneToMany(mappedBy = "restaurant_id", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
+    private List<RestaurantCategoryEntity> restaurantCategory = new ArrayList<>();*/
+
+    @ManyToMany
+    @JoinTable(name = "restaurant_category", joinColumns = @JoinColumn(name = "restaurant_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
+    private List<CategoryEntity> categories = new ArrayList<>();
+
+    public List<CategoryEntity> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<CategoryEntity> categories) {
+        this.categories = categories;
+    }
 
     @OneToMany(mappedBy = "restaurant_id", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private List<RestaurantItemEntity> restaurantItem = new ArrayList<>();
@@ -88,11 +108,11 @@ public class RestaurantEntity implements Serializable {
         this.photo_url = photo_url;
     }
 
-    public Float getCustomer_rating() {
+    public BigDecimal getCustomer_rating() {
         return customer_rating;
     }
 
-    public void setCustomer_rating(Float customer_rating) {
+    public void setCustomer_rating(BigDecimal customer_rating) {
         this.customer_rating = customer_rating;
     }
 
@@ -128,13 +148,16 @@ public class RestaurantEntity implements Serializable {
         this.orders = orders;
     }
 
-    public List<RestaurantCategoryEntity> getRestaurantCategory() {
+
+
+
+   /* public List<RestaurantCategoryEntity> getRestaurantCategory() {
         return restaurantCategory;
     }
 
     public void setRestaurantCategory(List<RestaurantCategoryEntity> restaurantCategory) {
         this.restaurantCategory = restaurantCategory;
-    }
+    }*/
 
     public List<RestaurantItemEntity> getRestaurantItem() {
         return restaurantItem;
