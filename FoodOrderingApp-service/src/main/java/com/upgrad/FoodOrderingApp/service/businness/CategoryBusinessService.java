@@ -20,6 +20,9 @@ public class CategoryBusinessService {
     @Autowired
     private RestaurantDao restaurantDao;
 
+    //This method returns categories of restaurant in alphabetical order.
+    //It takes restaurant uuid as input param and returns sorted categories alphabetically
+
     public List<CategoryEntity> getCategoriesByRestaurant(String RestaurantUuid){
         RestaurantEntity restaurantEntity = restaurantDao.getRestaurantByUuid(RestaurantUuid);
         return restaurantEntity.getCategories().stream().sorted(Comparator.comparing(CategoryEntity::getCategory_name)).collect(Collectors.toList());
