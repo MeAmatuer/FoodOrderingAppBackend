@@ -5,6 +5,7 @@ import com.upgrad.FoodOrderingApp.service.businness.CategoryBusinessService;
 import com.upgrad.FoodOrderingApp.service.businness.RestaurantBusinessService;
 import com.upgrad.FoodOrderingApp.service.entity.CategoryEntity;
 import com.upgrad.FoodOrderingApp.service.entity.RestaurantEntity;
+import com.upgrad.FoodOrderingApp.service.exception.CategoryNotFoundException;
 import com.upgrad.FoodOrderingApp.service.exception.RestaurantNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -129,8 +130,63 @@ public class RestaurantController {
         }
         //Returning the response with the desired http status code
         return new ResponseEntity<RestaurantListResponse>(listResponse, HttpStatus.OK);
+
     }
 
+    //This method returns restaurant list based on the input param category Id
+    //If category Id field is empty CategoryNotFoundException” with the message code (CNF-001) and message (Category id field should not be empty)
+    // Catogory Id is invalid categories it throws “CategoryNotFoundException” with the message code (CNF-002) and message (No category by this id)
+    //If there are no restaurants under the category entered by the customer, return an empty list with corresponding HTTP status.
+    //If the category id entered by the customer matches any category in the database, it should retrieve all the restaurants under this category in alphabetical order
+    //Within each restaurant, the list of categories should be displayed in a categories string, in alphabetical order
+
+    @CrossOrigin
+    @RequestMapping(method = RequestMethod.GET, path = "restaurant/category/{category_id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<RestaurantListResponse> getRestaurantsByCategoryId(@PathVariable("category_id") final String categoryId)
+            throws CategoryNotFoundException {
+
+        List<RestaurantEntity> restaurantListByCategoryId = restaurantBusinessService.getRestaurantsByCategoryId(categoryId);
+
+        RestaurantListResponse restaurantResponseByCategoryId = new RestaurantListResponse();
+
+        if(restaurantListByCategoryId.isEmpty()){
+            return new ResponseEntity<RestaurantListResponse>(restaurantResponseByCategoryId, HttpStatus.NOT_FOUND);
+        }
+
+        for (RestaurantEntity restaurantEntity : restaurantListByCategoryId) {
+            //Extracting state field of a restaurant
+            RestaurantDetailsResponseAddressState state = new RestaurantDetailsResponseAddressState()
+                    .id(UUID.fromString(restaurantEntity.getAddress().getState_id().getUuid())).
+                            stateName(restaurantEntity.getAddress().getState_id().getState_name());
+
+            //Extracting address field of a restaurant
+            RestaurantDetailsResponseAddress responseAddress = new RestaurantDetailsResponseAddress().
+                    id(UUID.fromString(restaurantEntity.getAddress().getUuid())).
+                    flatBuildingName(restaurantEntity.getAddress().getFlat_buil_number()).
+                    locality(restaurantEntity.getAddress().getLocality()).city(restaurantEntity.getAddress().getCity()).
+                    pincode(restaurantEntity.getAddress().getPincode()).state(state);
+
+            //Extracting categories field of a restaurant
+            String categories = categoryBusinessService.getCategoriesByRestaurant(restaurantEntity.getUuid())
+                    .stream().map(rc -> String.valueOf(rc.getCategory_name())).collect(Collectors.joining(","));
+
+
+            //Populating restaurant List with all necessary fields
+
+            RestaurantList restaurantsByCategory = new RestaurantList().id(UUID.fromString(restaurantEntity.getUuid())).
+                    restaurantName(restaurantEntity.getReastaurant_name()).photoURL(restaurantEntity.getPhoto_url())
+                    .customerRating(restaurantEntity.getCustomer_rating())
+                    .averagePrice(restaurantEntity.getAverage_price_for_two())
+                    .numberCustomersRated(restaurantEntity.getNumber_of_customers_rated())
+                    .address(responseAddress).categories(categories);
+
+            //Populating response field with all the restaurant items
+            restaurantResponseByCategoryId.addRestaurantsItem(restaurantsByCategory);
+        }
+
+        //Returning the response with the desired http status code
+        return new ResponseEntity<RestaurantListResponse>(restaurantResponseByCategoryId, HttpStatus.OK);
+    }
 }
 
 

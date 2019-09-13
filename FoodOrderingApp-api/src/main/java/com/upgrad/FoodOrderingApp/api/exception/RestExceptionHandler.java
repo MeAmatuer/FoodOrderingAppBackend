@@ -2,6 +2,7 @@ package com.upgrad.FoodOrderingApp.api.exception;
 
 
 import com.upgrad.FoodOrderingApp.api.model.ErrorResponse;
+import com.upgrad.FoodOrderingApp.service.exception.CategoryNotFoundException;
 import com.upgrad.FoodOrderingApp.service.exception.RestaurantNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,4 +19,12 @@ public class RestExceptionHandler {
                 new ErrorResponse().code(exc.getCode()).message(exc.getErrorMessage()), HttpStatus.NOT_FOUND
         );
     }
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<ErrorResponse> categoryNotFoundException(CategoryNotFoundException exc, WebRequest request) {
+        return new ResponseEntity<ErrorResponse>(
+                new ErrorResponse().code(exc.getCode()).message(exc.getErrorMessage()), HttpStatus.NOT_FOUND
+        );
+    }
+
 }
