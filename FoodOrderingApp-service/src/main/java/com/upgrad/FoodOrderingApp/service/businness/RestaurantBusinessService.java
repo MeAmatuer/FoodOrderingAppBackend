@@ -72,6 +72,23 @@ public class RestaurantBusinessService {
             restaurantListByCategoryId.sort(Comparator.comparing(RestaurantEntity::getReastaurant_name));
             return restaurantListByCategoryId;
        }
+
+       public RestaurantEntity getRestaurantsByUuid(String uuid) throws RestaurantNotFoundException{
+            if(uuid.equals("")){
+                throw new RestaurantNotFoundException("RNF-002","Restaurant id field should not be empty");
+            }
+
+            RestaurantEntity restaurantByRestaurantId = restaurantDao.getRestaurantByUuid(uuid);
+
+            if(restaurantByRestaurantId==null){
+                throw new RestaurantNotFoundException("RNF-001", "No Restaurant By this Id");
+            }
+
+            return restaurantByRestaurantId;
+
+
+       }
+
     }
 
 

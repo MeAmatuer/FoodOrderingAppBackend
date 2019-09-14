@@ -65,6 +65,11 @@ public class RestaurantEntity implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "category_id"))
     private List<CategoryEntity> categories = new ArrayList<>();
 
+    @ManyToMany
+    @JoinTable(name = "restaurant_item", joinColumns = @JoinColumn(name = "restaurant_id"),
+            inverseJoinColumns = @JoinColumn(name = "item_id"))
+    private List<ItemEntity> items = new ArrayList<>();
+
     public List<CategoryEntity> getCategories() {
         return categories;
     }
@@ -73,9 +78,9 @@ public class RestaurantEntity implements Serializable {
         this.categories = categories;
     }
 
-    @OneToMany(mappedBy = "restaurant_id", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
+    /*@OneToMany(mappedBy = "restaurant_id", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private List<RestaurantItemEntity> restaurantItem = new ArrayList<>();
-
+*/
     public Integer getId() {
         return id;
     }
@@ -148,10 +153,15 @@ public class RestaurantEntity implements Serializable {
         this.orders = orders;
     }
 
+    public List<ItemEntity> getItems() {
+        return items;
+    }
 
+    public void setItems(List<ItemEntity> items) {
+        this.items = items;
+    }
 
-
-   /* public List<RestaurantCategoryEntity> getRestaurantCategory() {
+    /* public List<RestaurantCategoryEntity> getRestaurantCategory() {
         return restaurantCategory;
     }
 
@@ -159,12 +169,12 @@ public class RestaurantEntity implements Serializable {
         this.restaurantCategory = restaurantCategory;
     }*/
 
-    public List<RestaurantItemEntity> getRestaurantItem() {
+    /*public List<RestaurantItemEntity> getRestaurantItem() {
         return restaurantItem;
     }
 
     public void setRestaurantItem(List<RestaurantItemEntity> restaurantItem) {
         this.restaurantItem = restaurantItem;
-    }
+    }*/
 }
 

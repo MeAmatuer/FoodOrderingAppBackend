@@ -2,8 +2,10 @@ package com.upgrad.FoodOrderingApp.api.controller;
 
 import com.upgrad.FoodOrderingApp.api.model.*;
 import com.upgrad.FoodOrderingApp.service.businness.CategoryBusinessService;
+import com.upgrad.FoodOrderingApp.service.businness.ItemBusinessService;
 import com.upgrad.FoodOrderingApp.service.businness.RestaurantBusinessService;
 import com.upgrad.FoodOrderingApp.service.entity.CategoryEntity;
+import com.upgrad.FoodOrderingApp.service.entity.ItemEntity;
 import com.upgrad.FoodOrderingApp.service.entity.RestaurantEntity;
 import com.upgrad.FoodOrderingApp.service.exception.CategoryNotFoundException;
 import com.upgrad.FoodOrderingApp.service.exception.RestaurantNotFoundException;
@@ -26,6 +28,9 @@ public class RestaurantController {
 
     @Autowired
     private CategoryBusinessService categoryBusinessService;
+
+    @Autowired
+    private ItemBusinessService itemBusinessService;
 
     //This method returns  all the restaurants in order of their ratings
     //It display the response in a JSON format with the corresponding HTTP status
@@ -149,7 +154,7 @@ public class RestaurantController {
 
         RestaurantListResponse restaurantResponseByCategoryId = new RestaurantListResponse();
 
-        if(restaurantListByCategoryId.isEmpty()){
+        if (restaurantListByCategoryId.isEmpty()) {
             return new ResponseEntity<RestaurantListResponse>(restaurantResponseByCategoryId, HttpStatus.NOT_FOUND);
         }
 
@@ -187,7 +192,68 @@ public class RestaurantController {
         //Returning the response with the desired http status code
         return new ResponseEntity<RestaurantListResponse>(restaurantResponseByCategoryId, HttpStatus.OK);
     }
-}
+
+    @CrossOrigin
+    @RequestMapping(method = RequestMethod.GET, path = "/restaurant/{restaurant_id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<RestaurantDetailsResponse> getRestaurantById(@PathVariable("restaurant_id") final String restaurantId)
+            throws RestaurantNotFoundException {
+
+        RestaurantEntity restaurantByRestaurantId = restaurantBusinessService.getRestaurantsByUuid(restaurantId);
+
+        //Extracting state field of a restaurant
+        RestaurantDetailsResponseAddressState state = new RestaurantDetailsResponseAddressState()
+                .id(UUID.fromString(restaurantByRestaurantId.getAddress().getState_id().getUuid())).
+                        stateName(restaurantByRestaurantId.getAddress().getState_id().getState_name());
+
+        //Extracting address field of a restaurant
+        RestaurantDetailsResponseAddress responseAddress = new RestaurantDetailsResponseAddress().
+                id(UUID.fromString(restaurantByRestaurantId.getAddress().getUuid())).
+                flatBuildingName(restaurantByRestaurantId.getAddress().getFlat_buil_number()).
+                locality(restaurantByRestaurantId.getAddress().getLocality())
+                .city(restaurantByRestaurantId.getAddress().getCity())
+                .pincode(restaurantByRestaurantId.getAddress().getPincode()).state(state);
+
+        //Populating the restaurant with different restaurant fields like restaurant id, restaurant name, photo url, customer rating etc...
+        RestaurantDetailsResponse restaurantDetailsResponse = new RestaurantDetailsResponse()
+                .id(UUID.fromString(restaurantByRestaurantId.getUuid()))
+                .restaurantName(restaurantByRestaurantId.getReastaurant_name())
+                .photoURL(restaurantByRestaurantId.getPhoto_url())
+                .customerRating(restaurantByRestaurantId.getCustomer_rating())
+                .averagePrice(restaurantByRestaurantId.getAverage_price_for_two())
+                .numberCustomersRated(restaurantByRestaurantId.getNumber_of_customers_rated())
+                .address(responseAddress);
+
+        //Fetching the restaurant categories and then populating the category details
+        List<CategoryEntity> restaurantCategoryList = categoryBusinessService.getCategoriesByRestaurant(restaurantId);
+
+        for (CategoryEntity categoryEntity : restaurantCategoryList) {
+            CategoryList restaurantCategories = new CategoryList()
+                    .id(UUID.fromString(categoryEntity.getUuid()))
+                    .categoryName(categoryEntity.getCategory_name());
+
+            //Fetching the category items and then populating its details
+            List<ItemEntity> categoryItems = itemBusinessService.getItemsByCategoryAndRestaurantId(restaurantId, categoryEntity.getUuid());
+
+                for (ItemEntity itemEntity : categoryItems) {
+                    ItemList itemList = new ItemList()
+                            .id(UUID.fromString(itemEntity.getUuid()))
+                            .itemName(itemEntity.getItem_name())
+                            .price(itemEntity.getPrice())
+                            .itemType(ItemList.ItemTypeEnum.fromValue(itemEntity.getType().getValue()));
+                    restaurantCategories.addItemListItem(itemList);
+                }
+
+                restaurantDetailsResponse.addCategoriesItem(restaurantCategories);
+
+            }
+
+            //Returning the response with the desired http status
+            return new ResponseEntity<RestaurantDetailsResponse>(restaurantDetailsResponse, HttpStatus.OK);
+
+        }
+ }
+
+
 
 
 
