@@ -15,7 +15,7 @@ import java.util.Comparator;
 import java.util.List;
 
 @Service
-public class ItemBusinessService {
+public class ItemService {
 
     @Autowired
     private ItemDao itemDao;

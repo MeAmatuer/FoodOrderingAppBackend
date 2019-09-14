@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class CategoryBusinessService {
+public class CategoryService {
 
     @Autowired
     private CategoryDao categoryDao;

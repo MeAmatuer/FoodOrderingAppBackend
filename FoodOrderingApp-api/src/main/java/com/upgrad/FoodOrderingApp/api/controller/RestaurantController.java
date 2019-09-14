@@ -1,14 +1,14 @@
 package com.upgrad.FoodOrderingApp.api.controller;
 
 import com.upgrad.FoodOrderingApp.api.model.*;
-import com.upgrad.FoodOrderingApp.service.businness.CategoryBusinessService;
-import com.upgrad.FoodOrderingApp.service.businness.ItemBusinessService;
-import com.upgrad.FoodOrderingApp.service.businness.RestaurantBusinessService;
+import com.upgrad.FoodOrderingApp.service.businness.CategoryService;
+import com.upgrad.FoodOrderingApp.service.businness.CustomerService;
+import com.upgrad.FoodOrderingApp.service.businness.ItemService;
+import com.upgrad.FoodOrderingApp.service.businness.RestaurantService;
 import com.upgrad.FoodOrderingApp.service.entity.CategoryEntity;
 import com.upgrad.FoodOrderingApp.service.entity.ItemEntity;
 import com.upgrad.FoodOrderingApp.service.entity.RestaurantEntity;
-import com.upgrad.FoodOrderingApp.service.exception.CategoryNotFoundException;
-import com.upgrad.FoodOrderingApp.service.exception.RestaurantNotFoundException;
+import com.upgrad.FoodOrderingApp.service.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,13 +24,16 @@ import java.util.stream.Collectors;
 public class RestaurantController {
 
     @Autowired
-    private RestaurantBusinessService restaurantBusinessService;
+    private RestaurantService restaurantService;
 
     @Autowired
-    private CategoryBusinessService categoryBusinessService;
+    private CategoryService categoryService;
 
     @Autowired
-    private ItemBusinessService itemBusinessService;
+    private ItemService itemService;
+
+    @Autowired
+    private CustomerService customerService;
 
     //This method returns  all the restaurants in order of their ratings
     //It display the response in a JSON format with the corresponding HTTP status
@@ -40,7 +43,7 @@ public class RestaurantController {
     @RequestMapping(method = RequestMethod.GET, path = "/restaurant", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<RestaurantListResponse> getAllRestaurants() {
 
-        List<RestaurantEntity> restaurantEntities = restaurantBusinessService.getAllRestaurantsByRating();
+        List<RestaurantEntity> restaurantEntities = restaurantService.getAllRestaurantsByRating();
 
         RestaurantListResponse restaurantListResponse = new RestaurantListResponse();
 
@@ -62,7 +65,7 @@ public class RestaurantController {
 
             //Extracting category field of a restaurant
 
-            String restaurantCategories = categoryBusinessService.getCategoriesByRestaurant(restaurantEntity.getUuid())
+            String restaurantCategories = categoryService.getCategoriesByRestaurant(restaurantEntity.getUuid())
                     .stream().map(rc -> String.valueOf(rc.getCategory_name())).collect(Collectors.joining(","));
 
             //Populating restaurant List with all necessary fields
@@ -92,7 +95,7 @@ public class RestaurantController {
     public ResponseEntity<RestaurantListResponse> getRestaurantsByName(@PathVariable("restaurant_name") final String restaurantName)
             throws RestaurantNotFoundException {
 
-        List<RestaurantEntity> matchedRestaurantsByNameList = restaurantBusinessService.getRestaurantsByName(restaurantName);
+        List<RestaurantEntity> matchedRestaurantsByNameList = restaurantService.getRestaurantsByName(restaurantName);
 
         RestaurantListResponse listResponse = new RestaurantListResponse();
 
@@ -118,7 +121,7 @@ public class RestaurantController {
 
             //Extracting categories field of a restaurant
 
-            String categories = categoryBusinessService.getCategoriesByRestaurant(restaurantEntity.getUuid())
+            String categories = categoryService.getCategoriesByRestaurant(restaurantEntity.getUuid())
                     .stream().map(rc -> String.valueOf(rc.getCategory_name())).collect(Collectors.joining(","));
 
             //Populating restaurant List with all necessary fields
@@ -146,11 +149,11 @@ public class RestaurantController {
     //Within each restaurant, the list of categories should be displayed in a categories string, in alphabetical order
 
     @CrossOrigin
-    @RequestMapping(method = RequestMethod.GET, path = "restaurant/category/{category_id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(method = RequestMethod.GET, path = "/restaurant/category/{category_id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<RestaurantListResponse> getRestaurantsByCategoryId(@PathVariable("category_id") final String categoryId)
             throws CategoryNotFoundException {
 
-        List<RestaurantEntity> restaurantListByCategoryId = restaurantBusinessService.getRestaurantsByCategoryId(categoryId);
+        List<RestaurantEntity> restaurantListByCategoryId = restaurantService.getRestaurantsByCategoryId(categoryId);
 
         RestaurantListResponse restaurantResponseByCategoryId = new RestaurantListResponse();
 
@@ -172,7 +175,7 @@ public class RestaurantController {
                     pincode(restaurantEntity.getAddress().getPincode()).state(state);
 
             //Extracting categories field of a restaurant
-            String categories = categoryBusinessService.getCategoriesByRestaurant(restaurantEntity.getUuid())
+            String categories = categoryService.getCategoriesByRestaurant(restaurantEntity.getUuid())
                     .stream().map(rc -> String.valueOf(rc.getCategory_name())).collect(Collectors.joining(","));
 
 
@@ -198,7 +201,7 @@ public class RestaurantController {
     public ResponseEntity<RestaurantDetailsResponse> getRestaurantById(@PathVariable("restaurant_id") final String restaurantId)
             throws RestaurantNotFoundException {
 
-        RestaurantEntity restaurantByRestaurantId = restaurantBusinessService.getRestaurantsByUuid(restaurantId);
+        RestaurantEntity restaurantByRestaurantId = restaurantService.getRestaurantsByUuid(restaurantId);
 
         //Extracting state field of a restaurant
         RestaurantDetailsResponseAddressState state = new RestaurantDetailsResponseAddressState()
@@ -224,7 +227,7 @@ public class RestaurantController {
                 .address(responseAddress);
 
         //Fetching the restaurant categories and then populating the category details
-        List<CategoryEntity> restaurantCategoryList = categoryBusinessService.getCategoriesByRestaurant(restaurantId);
+        List<CategoryEntity> restaurantCategoryList = categoryService.getCategoriesByRestaurant(restaurantId);
 
         for (CategoryEntity categoryEntity : restaurantCategoryList) {
             CategoryList restaurantCategories = new CategoryList()
@@ -232,7 +235,7 @@ public class RestaurantController {
                     .categoryName(categoryEntity.getCategory_name());
 
             //Fetching the category items and then populating its details
-            List<ItemEntity> categoryItems = itemBusinessService.getItemsByCategoryAndRestaurantId(restaurantId, categoryEntity.getUuid());
+            List<ItemEntity> categoryItems = itemService.getItemsByCategoryAndRestaurantId(restaurantId, categoryEntity.getUuid());
 
                 for (ItemEntity itemEntity : categoryItems) {
                     ItemList itemList = new ItemList()
@@ -249,9 +252,31 @@ public class RestaurantController {
 
             //Returning the response with the desired http status
             return new ResponseEntity<RestaurantDetailsResponse>(restaurantDetailsResponse, HttpStatus.OK);
-
         }
- }
+
+
+        @CrossOrigin
+        @RequestMapping(method = RequestMethod.PUT, path="/restaurant/{restaurant_id}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+        public ResponseEntity<RestaurantUpdatedResponse> updateRestaurantDetails(
+                @RequestParam(name="customer_rating") final Double customerRating,
+                @PathVariable("restaurant_id") final String restaurantId,
+                @RequestHeader("authorization") final String authorization)
+                throws RestaurantNotFoundException, AuthorizationFailedException, InvalidRatingException
+        {
+
+            String accessToken = authorization.split("Bearer ")[1];
+            customerService.getCustomer(accessToken);
+
+            RestaurantEntity restaurantEntity = restaurantService.getRestaurantsByUuid(restaurantId);
+
+            RestaurantEntity updatedRestaurantEntity = restaurantService.updateRestaurantRating(restaurantEntity, customerRating);
+
+            RestaurantUpdatedResponse restaurantUpdatedResponse = new RestaurantUpdatedResponse()
+                    .id(UUID.fromString(updatedRestaurantEntity.getUuid()))
+                    .status("RESTAURANT RATING UPDATED SUCCESSFULLY");
+            return new ResponseEntity<RestaurantUpdatedResponse>(restaurantUpdatedResponse,HttpStatus.OK);
+        }
+}
 
 
 
