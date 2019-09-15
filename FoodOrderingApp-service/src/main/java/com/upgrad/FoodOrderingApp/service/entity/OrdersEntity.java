@@ -3,11 +3,16 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
+@NamedQueries({
+        @NamedQuery(name = "pastOrdersByDate", query = "select o from OrdersEntity o order by o.date desc")
+})
 @Table(name="orders")
 public class OrdersEntity implements Serializable {
 
@@ -20,11 +25,11 @@ public class OrdersEntity implements Serializable {
     @Column(name="uuid")
     @Size(max=200)
     @NotNull
-    private String uuid;
+    private UUID uuid;
 
     @Column(name="bill")
     @NotNull
-    private float bill;
+    private BigDecimal bill;
 
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="coupon_id")
@@ -32,7 +37,7 @@ public class OrdersEntity implements Serializable {
 
     @Column(name="discount")
     @NotNull
-    private float discount;
+    private BigDecimal discount;
 
     @Column(name = "date")
     @NotNull
@@ -54,7 +59,7 @@ public class OrdersEntity implements Serializable {
     @JoinColumn(name="restaurant_id")
     private RestaurantEntity restaurant;
 
-    @OneToMany(mappedBy = "order_id", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
+    @OneToMany(mappedBy = "orderId", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private List<OrderItemEntity> orderItem = new ArrayList<>();
 
     public List<OrderItemEntity> getOrderItem() {
@@ -73,19 +78,19 @@ public class OrdersEntity implements Serializable {
         this.id = id;
     }
 
-    public String getUuid() {
+    public UUID getUuid() {
         return uuid;
     }
 
-    public void setUuid(String uuid) {
+    public void setUuid(UUID uuid) {
         this.uuid = uuid;
     }
 
-    public float getBill() {
+    public BigDecimal getBill() {
         return bill;
     }
 
-    public void setBill(float bill) {
+    public void setBill(BigDecimal bill) {
         this.bill = bill;
     }
 
@@ -97,11 +102,11 @@ public class OrdersEntity implements Serializable {
         this.coupon = coupon;
     }
 
-    public float getDiscount() {
+    public BigDecimal getDiscount() {
         return discount;
     }
 
-    public void setDiscount(float discount) {
+    public void setDiscount(BigDecimal discount) {
         this.discount = discount;
     }
 

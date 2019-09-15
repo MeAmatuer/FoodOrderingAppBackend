@@ -4,6 +4,7 @@ import com.upgrad.FoodOrderingApp.service.dao.CustomerAuthDao;
 import com.upgrad.FoodOrderingApp.service.dao.OrderDao;
 import com.upgrad.FoodOrderingApp.service.entity.CouponEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthEntity;
+import com.upgrad.FoodOrderingApp.service.entity.OrdersEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.CouponNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.List;
 
 @Service
 public class OrderService {
@@ -24,6 +26,26 @@ public class OrderService {
 
     public CouponEntity getCoupon(String couponName, String accessToken) throws AuthorizationFailedException, CouponNotFoundException {
 
+        checkAccessToken(accessToken);
+        if(couponName.isEmpty()){
+            throw new CouponNotFoundException("CPF-002", "Coupon name field should not be empty");
+        }
+        CouponEntity couponEntity = orderDao.getCouponByName(couponName);
+        if (couponEntity != null) {
+            return couponEntity;
+        }else {
+            throw new CouponNotFoundException("CPF-001", "No coupon by this name");
+        }
+    }
+
+
+    public List<OrdersEntity> getPastOrders(String accessToken) throws AuthorizationFailedException {
+        checkAccessToken(accessToken);
+        List<OrdersEntity> pastOrders = orderDao.getPastOrders();
+        return pastOrders;
+    }
+
+    private void checkAccessToken(String accessToken) throws AuthorizationFailedException{
         final ZonedDateTime now;
         now = ZonedDateTime.now(ZoneId.systemDefault());
 
@@ -37,15 +59,6 @@ public class OrderService {
         }
         if (loggedInCustomerAuth.getExpiresAt().isAfter(now) ||  loggedInCustomerAuth.getExpiresAt().isEqual(now)) {
             throw new AuthorizationFailedException("ATHR-003", "Your session is expired. Log in again to access this endpoint.");
-        }
-        if(couponName.isEmpty()){
-            throw new CouponNotFoundException("CPF-002", "Coupon name field should not be empty");
-        }
-        CouponEntity couponEntity = orderDao.getCouponByName(couponName);
-        if (couponEntity != null) {
-            return couponEntity;
-        }else {
-            throw new CouponNotFoundException("CPF-001", "No coupon by this name");
         }
     }
 }
