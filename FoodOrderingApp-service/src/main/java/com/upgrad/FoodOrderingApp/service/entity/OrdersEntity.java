@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Entity
 @NamedQueries({
-        @NamedQuery(name = "pastOrdersByDate", query = "select o from OrdersEntity o order by o.date desc")
+        @NamedQuery(name = "pastOrdersByDate", query = "select o from OrdersEntity o where o.customer = :customer order by o.date desc")
 })
 @Table(name="orders")
 public class OrdersEntity implements Serializable {
