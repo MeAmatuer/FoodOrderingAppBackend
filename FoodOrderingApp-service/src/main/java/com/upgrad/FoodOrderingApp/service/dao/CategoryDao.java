@@ -25,6 +25,7 @@ public class CategoryDao {
         }
     }
 
+    //This method returns category entity for a given uuid
 
     public CategoryEntity getCategoryByUuid(String uuid){
         try{

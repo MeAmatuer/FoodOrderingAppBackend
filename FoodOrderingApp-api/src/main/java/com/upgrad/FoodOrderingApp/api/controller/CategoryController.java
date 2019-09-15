@@ -25,8 +25,8 @@ public class CategoryController {
     //This method retrieve all the categories present in the database, ordered by their name and display the response
 
     @CrossOrigin
-    @RequestMapping(method= RequestMethod.GET, path="/category", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<CategoriesListResponse> getAllCategories(){
+    @RequestMapping(method = RequestMethod.GET, path = "/category", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<CategoriesListResponse> getAllCategories() {
 
         //get all categories ordered by their names
         List<CategoryEntity> categoryList = categoryService.getAllCategoriesOrderedByName();
@@ -36,7 +36,7 @@ public class CategoryController {
 
         CategoriesListResponse categoriesListResponse = new CategoriesListResponse();
 
-        for(CategoryEntity categoryEntity:categoryList){
+        for (CategoryEntity categoryEntity : categoryList) {
             CategoryListResponse categoryListResponse = new CategoryListResponse()
                     .id(UUID.fromString(categoryEntity.getUuid()))
                     .categoryName(categoryEntity.getCategoryName());
@@ -47,6 +47,10 @@ public class CategoryController {
         return new ResponseEntity<CategoriesListResponse>(categoriesListResponse, HttpStatus.OK);
 
     }
+
+    //This method is retrieves category based on the input category Id
+    //And generates response object along with appropriate status code
+    //And throws CategoryNotFoundExceptions in cases where category Id is empty and there are no categories available by the id provided
 
     @CrossOrigin
     @RequestMapping(method = RequestMethod.GET, path = "/category/{category_id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -63,7 +67,7 @@ public class CategoryController {
                 .id(UUID.fromString(categoryEntity.getUuid()))
                 .categoryName(categoryEntity.getCategoryName());
 
-        for(ItemEntity itemEntity: categoryEntity.getItems()){
+        for (ItemEntity itemEntity : categoryEntity.getItems()) {
 
             ItemList itemList = new ItemList()
                     .id(UUID.fromString(itemEntity.getUuid()))
