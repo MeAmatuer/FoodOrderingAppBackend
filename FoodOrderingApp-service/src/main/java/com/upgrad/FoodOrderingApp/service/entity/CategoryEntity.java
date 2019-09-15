@@ -24,12 +24,12 @@ public class CategoryEntity implements Serializable {
     @Column(name="category_name")
     @Size(max=255)
     @NotNull
-    private String category_name;
+    private String categoryName;
 
-    @OneToMany(mappedBy = "category_id", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+    @OneToMany(mappedBy = "categoryId", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
     private List<RestaurantCategoryEntity> restaurantCategory = new ArrayList<>();
 
-    @OneToMany(mappedBy = "category_id", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+    @OneToMany(mappedBy = "categoryId", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
     private List<CategoryItemEntity> categoryItem = new ArrayList<>();
 
     public Integer getId() {
@@ -48,12 +48,12 @@ public class CategoryEntity implements Serializable {
         this.uuid = uuid;
     }
 
-    public String getCategory_name() {
-        return category_name;
+    public String getCategoryName() {
+        return categoryName;
     }
 
-    public void setCategory_name(String category_name) {
-        this.category_name = category_name;
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
     public List<RestaurantCategoryEntity> getRestaurantCategory() {

@@ -24,24 +24,24 @@ public class RestaurantEntity implements Serializable {
     @Column(name="restaurant_name")
     @Size(max=30)
     @NotNull
-    private String reastaurant_name;
+    private String restaurantName;
 
     @Column(name="photo_url")
     @Size(max=255)
     @NotNull
-    private String photo_url;
+    private String photoUrl;
 
     @Column(name="customer_rating")
     @NotNull
-    private Float customer_rating;
+    private Float customerRating;
 
     @Column(name="average_price_for_two")
     @NotNull
-    private Integer average_price_for_two;
+    private Integer averagePriceForTwo;
 
     @Column(name="number_of_customers_rated")
     @NotNull
-    private Integer number_of_customers_rated;
+    private Integer numberOfCustomersRated;
 
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="address_id")
@@ -50,10 +50,10 @@ public class RestaurantEntity implements Serializable {
     @OneToMany(mappedBy = "restaurant", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private List<OrdersEntity> orders = new ArrayList<>();
 
-    @OneToMany(mappedBy = "restaurant_id", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
+    @OneToMany(mappedBy = "restaurantId", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private List<RestaurantCategoryEntity> restaurantCategory = new ArrayList<>();
 
-    @OneToMany(mappedBy = "restaurant_id", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
+    @OneToMany(mappedBy = "restaurantId", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private List<RestaurantItemEntity> restaurantItem = new ArrayList<>();
 
     public Integer getId() {
@@ -72,44 +72,44 @@ public class RestaurantEntity implements Serializable {
         this.uuid = uuid;
     }
 
-    public String getReastaurant_name() {
-        return reastaurant_name;
+    public String getRestaurantName() {
+        return restaurantName;
     }
 
-    public void setReastaurant_name(String reastaurant_name) {
-        this.reastaurant_name = reastaurant_name;
+    public void setRestaurantName(String restaurantName) {
+        this.restaurantName = restaurantName;
     }
 
-    public String getPhoto_url() {
-        return photo_url;
+    public String getPhotoUrl() {
+        return photoUrl;
     }
 
-    public void setPhoto_url(String photo_url) {
-        this.photo_url = photo_url;
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
     }
 
-    public Float getCustomer_rating() {
-        return customer_rating;
+    public Float getCustomerRating() {
+        return customerRating;
     }
 
-    public void setCustomer_rating(Float customer_rating) {
-        this.customer_rating = customer_rating;
+    public void setCustomerRating(Float customerRating) {
+        this.customerRating = customerRating;
     }
 
-    public Integer getAverage_price_for_two() {
-        return average_price_for_two;
+    public Integer getAveragePriceForTwo() {
+        return averagePriceForTwo;
     }
 
-    public void setAverage_price_for_two(Integer average_price_for_two) {
-        this.average_price_for_two = average_price_for_two;
+    public void setAveragePriceForTwo(Integer averagePriceForTwo) {
+        this.averagePriceForTwo = averagePriceForTwo;
     }
 
-    public Integer getNumber_of_customers_rated() {
-        return number_of_customers_rated;
+    public Integer getNumberOfCustomersRated() {
+        return numberOfCustomersRated;
     }
 
-    public void setNumber_of_customers_rated(Integer number_of_customers_rated) {
-        this.number_of_customers_rated = number_of_customers_rated;
+    public void setNumberOfCustomersRated(Integer numberOfCustomersRated) {
+        this.numberOfCustomersRated = numberOfCustomersRated;
     }
 
     public AddressEntity getAddress() {

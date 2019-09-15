@@ -24,7 +24,7 @@ public class PaymentEntity implements Serializable {
     @Column(name="payment_name")
     @Size(max=255)
     @NotNull
-    private String payment_name;
+    private String paymentName;
 
     @OneToMany(mappedBy = "payment", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private List<OrdersEntity> orders = new ArrayList<>();
@@ -45,12 +45,12 @@ public class PaymentEntity implements Serializable {
         this.uuid = uuid;
     }
 
-    public String getPayment_name() {
-        return payment_name;
+    public String getPaymentName() {
+        return paymentName;
     }
 
-    public void setPayment_name(String payment_name) {
-        this.payment_name = payment_name;
+    public void setPaymentName(String paymentName) {
+        this.paymentName = paymentName;
     }
 
     public List<OrdersEntity> getOrders() {

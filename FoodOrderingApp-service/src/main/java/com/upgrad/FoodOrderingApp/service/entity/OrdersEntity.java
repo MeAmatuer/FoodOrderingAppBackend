@@ -54,7 +54,7 @@ public class OrdersEntity implements Serializable {
     @JoinColumn(name="restaurant_id")
     private RestaurantEntity restaurant;
 
-    @OneToMany(mappedBy = "order_id", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
+    @OneToMany(mappedBy = "orderId", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private List<OrderItemEntity> orderItem = new ArrayList<>();
 
     public List<OrderItemEntity> getOrderItem() {

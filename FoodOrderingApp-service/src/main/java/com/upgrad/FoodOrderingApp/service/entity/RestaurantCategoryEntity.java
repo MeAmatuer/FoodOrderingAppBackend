@@ -15,11 +15,11 @@ public class RestaurantCategoryEntity implements Serializable {
 
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="restaurant_id")
-    private RestaurantEntity restaurant_id;
+    private RestaurantEntity restaurantId;
 
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="category_id")
-    private CategoryEntity category_id;
+    private CategoryEntity categoryId;
 
     public Integer getId() {
         return id;
@@ -29,20 +29,20 @@ public class RestaurantCategoryEntity implements Serializable {
         this.id = id;
     }
 
-    public RestaurantEntity getRestaurant_id() {
-        return restaurant_id;
+    public RestaurantEntity getRestaurantId() {
+        return restaurantId;
     }
 
-    public void setRestaurant_id(RestaurantEntity restaurant_id) {
-        this.restaurant_id = restaurant_id;
+    public void setRestaurantId(RestaurantEntity restaurantId) {
+        this.restaurantId = restaurantId;
     }
 
-    public CategoryEntity getCategory_id() {
-        return category_id;
+    public CategoryEntity getCategoryId() {
+        return categoryId;
     }
 
-    public void setCategory_id(CategoryEntity category_id) {
-        this.category_id = category_id;
+    public void setCategoryId(CategoryEntity categoryId) {
+        this.categoryId = categoryId;
     }
 
     public RestaurantCategoryEntity() {
