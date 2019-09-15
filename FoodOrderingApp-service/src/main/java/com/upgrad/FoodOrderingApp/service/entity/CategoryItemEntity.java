@@ -19,7 +19,7 @@ public class CategoryItemEntity implements Serializable {
 
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="category_id")
-    private CategoryEntity category_id;
+    private CategoryEntity categoryId;
 
     public Integer getId() {
         return id;
@@ -37,12 +37,12 @@ public class CategoryItemEntity implements Serializable {
         this.item_id = item_id;
     }
 
-    public CategoryEntity getCategory_id() {
-        return category_id;
+    public CategoryEntity getCategoryId() {
+        return categoryId;
     }
 
-    public void setCategory_id(CategoryEntity category_id) {
-        this.category_id = category_id;
+    public void setCategoryId(CategoryEntity categoryId) {
+        this.categoryId = categoryId;
     }
 
     public CategoryItemEntity() {
