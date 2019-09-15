@@ -28,7 +28,7 @@ public class CategoryEntity implements Serializable {
     @Column(name="category_name")
     @Size(max=255)
     @NotNull
-    private String category_name;
+    private String CategoryName;
 
     /*@OneToMany(mappedBy = "category_id", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
     private List<RestaurantCategoryEntity> restaurantCategory = new ArrayList<>();*/
@@ -70,12 +70,12 @@ public class CategoryEntity implements Serializable {
         this.uuid = uuid;
     }
 
-    public String getCategory_name() {
-        return category_name;
+    public String getCategoryName() {
+        return CategoryName;
     }
 
-    public void setCategory_name(String category_name) {
-        this.category_name = category_name;
+    public void setCategoryName(String categoryName) {
+        CategoryName = categoryName;
     }
 
     public List<ItemEntity> getItems() {

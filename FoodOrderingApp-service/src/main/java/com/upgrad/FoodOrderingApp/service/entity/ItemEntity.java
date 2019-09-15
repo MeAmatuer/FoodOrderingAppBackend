@@ -26,7 +26,8 @@ public class ItemEntity implements Serializable {
     @Column(name="item_name")
     @Size(max=30)
     @NotNull
-    private String item_name;
+    private String ItemName;
+
 
     @NotNull
     @Column(name="price")
@@ -67,12 +68,12 @@ public class ItemEntity implements Serializable {
         this.uuid = uuid;
     }
 
-    public String getItem_name() {
-        return item_name;
+    public String getItemName() {
+        return ItemName;
     }
 
-    public void setItem_name(String item_name) {
-        this.item_name = item_name;
+    public void setItemName(String itemName) {
+        ItemName = itemName;
     }
 
     public Integer getPrice() {
