@@ -1,10 +1,13 @@
 package com.upgrad.FoodOrderingApp.service.entity;
+import com.upgrad.FoodOrderingApp.service.common.ItemType;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name="item")
@@ -19,12 +22,12 @@ public class ItemEntity implements Serializable {
     @Column(name="uuid")
     @Size(max=200)
     @NotNull
-    private String uuid;
+    private UUID uuid;
 
     @Column(name="item_name")
     @Size(max=30)
     @NotNull
-    private String item_name;
+    private String itemName;
 
     @NotNull
     @Column(name="price")
@@ -33,15 +36,15 @@ public class ItemEntity implements Serializable {
     @Column(name="type")
     @Size(max=10)
     @NotNull
-    private String type;
+    private ItemType type;
 
-    @OneToMany(mappedBy = "item_id", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
+    @OneToMany(mappedBy = "itemId", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private List<OrderItemEntity> orderItem = new ArrayList<>();
 
-    @OneToMany(mappedBy = "item_id", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
+    @OneToMany(mappedBy = "itemId", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private List<CategoryItemEntity> categoryItem = new ArrayList<>();
 
-    @OneToMany(mappedBy = "item_id", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
+    @OneToMany(mappedBy = "itemId", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private List<RestaurantItemEntity> restaurantItem = new ArrayList<>();
 
     public Integer getId() {
@@ -52,20 +55,20 @@ public class ItemEntity implements Serializable {
         this.id = id;
     }
 
-    public String getUuid() {
+    public UUID getUuid() {
         return uuid;
     }
 
-    public void setUuid(String uuid) {
+    public void setUuid(UUID uuid) {
         this.uuid = uuid;
     }
 
-    public String getItem_name() {
-        return item_name;
+    public String getItemName() {
+        return itemName;
     }
 
-    public void setItem_name(String item_name) {
-        this.item_name = item_name;
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
     }
 
     public Integer getPrice() {
@@ -76,11 +79,11 @@ public class ItemEntity implements Serializable {
         this.price = price;
     }
 
-    public String getType() {
+    public ItemType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(ItemType type) {
         this.type = type;
     }
 

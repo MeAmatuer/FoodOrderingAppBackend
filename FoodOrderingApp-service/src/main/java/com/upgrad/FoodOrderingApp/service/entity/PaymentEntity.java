@@ -5,6 +5,7 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name="payment")
@@ -19,12 +20,12 @@ public class PaymentEntity implements Serializable {
     @Column(name="uuid")
     @Size(max=200)
     @NotNull
-    private String uuid;
+    private UUID uuid;
 
     @Column(name="payment_name")
     @Size(max=255)
     @NotNull
-    private String payment_name;
+    private String paymentName;
 
     @OneToMany(mappedBy = "payment", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private List<OrdersEntity> orders = new ArrayList<>();
@@ -37,20 +38,20 @@ public class PaymentEntity implements Serializable {
         this.id = id;
     }
 
-    public String getUuid() {
+    public UUID getUuid() {
         return uuid;
     }
 
-    public void setUuid(String uuid) {
+    public void setUuid(UUID uuid) {
         this.uuid = uuid;
     }
 
-    public String getPayment_name() {
-        return payment_name;
+    public String getPaymentName() {
+        return paymentName;
     }
 
-    public void setPayment_name(String payment_name) {
-        this.payment_name = payment_name;
+    public void setPaymentName(String paymentName) {
+        this.paymentName = paymentName;
     }
 
     public List<OrdersEntity> getOrders() {

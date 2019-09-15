@@ -6,6 +6,7 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 
 @Entity
@@ -21,7 +22,7 @@ public class CustomerEntity implements Serializable {
     @Column(name="uuid")
     @Size(max=200)
     @NotNull
-    private String uuid;
+    private UUID uuid;
 
     @Column(name = "firstname")
     @Size(max = 30)
@@ -40,7 +41,7 @@ public class CustomerEntity implements Serializable {
     @Column(name = "contact_number")
     @Size(max = 30)
     @NotNull
-    private String contact_number;
+    private String contactNumber;
 
     @Column(name = "password")
     @Size(max = 255)
@@ -67,11 +68,11 @@ public class CustomerEntity implements Serializable {
         this.id = id;
     }
 
-    public String getUuid() {
+    public UUID getUuid() {
         return uuid;
     }
 
-    public void setUuid(String uuid) {
+    public void setUuid(UUID uuid) {
         this.uuid = uuid;
     }
 
@@ -99,12 +100,12 @@ public class CustomerEntity implements Serializable {
         this.email = email;
     }
 
-    public String getContact_number() {
-        return contact_number;
+    public String getContactNumber() {
+        return contactNumber;
     }
 
-    public void setContact_number(String contact_number) {
-        this.contact_number = contact_number;
+    public void setContactNumber(String contactNumber) {
+        this.contactNumber = contactNumber;
     }
 
     public String getPassword() {
