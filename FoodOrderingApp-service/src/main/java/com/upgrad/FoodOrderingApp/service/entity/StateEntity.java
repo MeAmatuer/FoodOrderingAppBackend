@@ -28,8 +28,8 @@ public class StateEntity implements Serializable {
     @NotNull
     private String state_name;
 
-    @OneToMany(mappedBy = "state_id", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
-    private List<AddressEntity> Addresses = new ArrayList<>();
+    @OneToMany(mappedBy = "stateId", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
+    private List<AddressEntity> addresses = new ArrayList<>();
 
     public Integer getId() {
         return id;
@@ -56,11 +56,11 @@ public class StateEntity implements Serializable {
     }
 
     public List<AddressEntity> getAddresses() {
-        return Addresses;
+        return addresses;
     }
 
     public void setAddresses(List<AddressEntity> addresses) {
-        Addresses = addresses;
+        this.addresses = addresses;
     }
 
     public StateEntity() {
