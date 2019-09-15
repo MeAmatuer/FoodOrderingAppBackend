@@ -6,6 +6,7 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name="state")
@@ -21,12 +22,12 @@ public class StateEntity implements Serializable {
     @Column(name="uuid")
     @Size(max=200)
     @NotNull
-    private String uuid;
+    private UUID uuid;
 
     @Column(name="state_name")
     @Size(max=30)
     @NotNull
-    private String state_name;
+    private String stateName;
 
     @OneToMany(mappedBy = "stateId", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private List<AddressEntity> addresses = new ArrayList<>();
@@ -39,20 +40,20 @@ public class StateEntity implements Serializable {
         this.id = id;
     }
 
-    public String getUuid() {
+    public UUID getUuid() {
         return uuid;
     }
 
-    public void setUuid(String uuid) {
+    public void setUuid(UUID uuid) {
         this.uuid = uuid;
     }
 
-    public String getState_name() {
-        return state_name;
+    public String getStateName() {
+        return stateName;
     }
 
-    public void setState_name(String state_name) {
-        this.state_name = state_name;
+    public void setStateName(String stateName) {
+        this.stateName = stateName;
     }
 
     public List<AddressEntity> getAddresses() {

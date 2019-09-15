@@ -16,11 +16,11 @@ public class OrderItemEntity implements Serializable {
 
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="order_id")
-    private OrdersEntity order_id;
+    private OrdersEntity orderId;
 
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="item_id")
-    private ItemEntity item_id;
+    private ItemEntity itemId;
 
     @NotNull
     @Column(name="quantity")
@@ -38,20 +38,20 @@ public class OrderItemEntity implements Serializable {
         this.id = id;
     }
 
-    public OrdersEntity getOrder_id() {
-        return order_id;
+    public OrdersEntity getOrderId() {
+        return orderId;
     }
 
-    public void setOrder_id(OrdersEntity order_id) {
-        this.order_id = order_id;
+    public void setOrderId(OrdersEntity orderId) {
+        this.orderId = orderId;
     }
 
-    public ItemEntity getItem_id() {
-        return item_id;
+    public ItemEntity getItemId() {
+        return itemId;
     }
 
-    public void setItem_id(ItemEntity item_id) {
-        this.item_id = item_id;
+    public void setItemId(ItemEntity itemId) {
+        this.itemId = itemId;
     }
 
     public Integer getQuantity() {
