@@ -9,6 +9,9 @@ import java.time.ZonedDateTime;
 
 @Entity
 @Table(name="customer_auth")
+@NamedQueries({
+        @NamedQuery(name = "customerAuthByAccessToken", query = "select c from CustomerAuthEntity c where c.accessToken = :accessToken")
+})
 public class CustomerAuthEntity implements Serializable {
 
     @Id
@@ -30,7 +33,7 @@ public class CustomerAuthEntity implements Serializable {
     @Column(name = "access_token")
     @NotNull
     @Size(max = 500)
-    private String access_token;
+    private String accessToken;
 
     @Column(name = "login_at")
     @NotNull
@@ -67,12 +70,12 @@ public class CustomerAuthEntity implements Serializable {
         this.customer = customer;
     }
 
-    public String getAccess_token() {
-        return access_token;
+    public String getAccessToken() {
+        return accessToken;
     }
 
-    public void setAccess_token(String access_token) {
-        this.access_token = access_token;
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 
     public ZonedDateTime getLoginAt() {
