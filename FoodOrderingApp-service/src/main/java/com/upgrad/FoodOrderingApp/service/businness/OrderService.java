@@ -4,6 +4,7 @@ import com.upgrad.FoodOrderingApp.service.dao.CustomerAuthDao;
 import com.upgrad.FoodOrderingApp.service.dao.OrderDao;
 import com.upgrad.FoodOrderingApp.service.entity.CouponEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthEntity;
+import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
 import com.upgrad.FoodOrderingApp.service.entity.OrdersEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.CouponNotFoundException;
@@ -41,7 +42,8 @@ public class OrderService {
 
     public List<OrdersEntity> getPastOrders(String accessToken) throws AuthorizationFailedException {
         checkAccessToken(accessToken);
-        List<OrdersEntity> pastOrders = orderDao.getPastOrders();
+        CustomerEntity customerEntity = customerAuthDao.findByAccessToken(accessToken).getCustomer();
+        List<OrdersEntity> pastOrders = orderDao.getPastOrders(customerEntity);
         return pastOrders;
     }
 
