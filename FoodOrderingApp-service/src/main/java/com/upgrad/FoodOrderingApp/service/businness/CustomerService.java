@@ -7,6 +7,7 @@ import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AuthenticationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.SignUpRestrictedException;
+import com.upgrad.FoodOrderingApp.service.exception.UpdateCustomerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -96,6 +97,30 @@ public class CustomerService {
         loggedInCustomerAuth.setLogoutAt(ZonedDateTime.now(ZoneId.systemDefault()));
         CustomerAuthEntity loggedOutCustomerAuth = customerAuthDao.update(loggedInCustomerAuth);
         return loggedOutCustomerAuth;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public CustomerEntity updateCustomer(final CustomerEntity customer) throws AuthorizationFailedException, UpdateCustomerException {
+
+        CustomerEntity updatedCustomer = customerDao.updateCustomer(customer);
+        return updatedCustomer;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public CustomerEntity getCustomer(final String accessToken) throws AuthorizationFailedException {
+        CustomerAuthEntity customerAuth = customerAuthDao.findCustAuthByAccessToken(accessToken);
+        final ZonedDateTime now;
+        if (customerAuth == null) {
+            throw new AuthorizationFailedException("ATHR-001", "Customer is not Logged in.");
+        }
+        if (customerAuth.getLogoutAt() != null) {
+            throw new AuthorizationFailedException("ATHR-002", "Customer is logged out. Log in again to access this endpoint.");
+        }
+        now = ZonedDateTime.now(ZoneId.systemDefault());
+        if (customerAuth.getExpiresAt().isBefore(now) ||  customerAuth.getExpiresAt().isEqual(now)) {
+            throw new AuthorizationFailedException("ATHR-003", "Your session is expired. Log in again to access this endpoint.");
+        }
+        return customerAuth.getCustomer();
     }
 
     private boolean fieldsComplete(CustomerEntity customer) throws SignUpRestrictedException {
