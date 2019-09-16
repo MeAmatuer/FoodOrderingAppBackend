@@ -8,14 +8,13 @@ import java.time.ZonedDateTime;
 
 
 @Entity
-@Table(name="customer_auth")
 @NamedQueries({
-        @NamedQuery(name = "customerAuthByAccessToken", query = "select c from CustomerAuthEntity c where c.accessToken = :accessToken")
+        @NamedQuery(name = "customerAuthByAccessToken", query = "select cae from CustomerAuthEntity cae where cae.accessToken = :accessToken")
 })
+@Table(name="customer_auth")
 public class CustomerAuthEntity implements Serializable {
 
     @Id
-    @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     private Integer id;

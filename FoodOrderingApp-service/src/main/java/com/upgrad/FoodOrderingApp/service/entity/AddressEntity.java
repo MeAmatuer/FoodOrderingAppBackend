@@ -7,12 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@NamedQueries({
+        @NamedQuery(name = "getAddressByAddressId", query = "SELECT a FROM AddressEntity a WHERE a.uuid = :addressId")
+})
 @Table(name="address")
 public class AddressEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotNull
     @Column(name="id")
     private Integer id;
 
@@ -23,29 +25,24 @@ public class AddressEntity implements Serializable {
 
     @Column(name="flat_buil_number")
     @Size(max=255)
-    @NotNull
-    private String flat_buil_number;
+    private String flatBuildingNumber;
 
     @Column(name="locality")
     @Size(max=255)
-    @NotNull
     private String locality;
 
     @Column(name="city")
     @Size(max=30)
-    @NotNull
     private String city;
 
     @Column(name="pincode")
     @Size(max=30)
-    @NotNull
     private String pincode;
 
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="state_id")
     private StateEntity stateId;
 
-    @NotNull
     @Column(name="active")
     private Integer active;
 
@@ -82,12 +79,12 @@ public class AddressEntity implements Serializable {
         this.uuid = uuid;
     }
 
-    public String getFlat_buil_number() {
-        return flat_buil_number;
+    public String getFlatBuilNo() {
+        return flatBuildingNumber;
     }
 
-    public void setFlat_buil_number(String flat_buil_number) {
-        this.flat_buil_number = flat_buil_number;
+    public void setFlatBuilNo(String flatBuildingNumber) {
+        this.flatBuildingNumber = flatBuildingNumber;
     }
 
     public String getLocality() {
@@ -114,11 +111,11 @@ public class AddressEntity implements Serializable {
         this.pincode = pincode;
     }
 
-    public StateEntity getStateId() {
+    public StateEntity getState() {
         return stateId;
     }
 
-    public void setStateId(StateEntity stateId) {
+    public void setState(StateEntity stateId) {
         this.stateId = stateId;
     }
 
