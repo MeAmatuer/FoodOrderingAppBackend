@@ -30,4 +30,18 @@ public class AddressDao {
             return null;
         }
     }
+
+    public AddressEntity getAddressByAddressId(final String addressId) {
+        try {
+            AddressEntity address = entityManager.createNamedQuery("getAddressByAddressId", AddressEntity.class)
+                    .setParameter("addressId", addressId).getSingleResult();
+            return address;
+        } catch (NoResultException nre) {
+            return null;
+        }
+    }
+    public AddressEntity deleteAddress(final AddressEntity address) {
+        entityManager.remove(address);
+        return address;
+    }
 }

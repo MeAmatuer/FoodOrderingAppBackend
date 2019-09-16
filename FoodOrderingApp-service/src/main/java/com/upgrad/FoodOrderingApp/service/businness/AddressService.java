@@ -8,6 +8,7 @@ import com.upgrad.FoodOrderingApp.service.entity.CustomerAddressEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
 import com.upgrad.FoodOrderingApp.service.entity.StateEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AddressNotFoundException;
+import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.SaveAddressException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -69,6 +70,28 @@ public class AddressService {
                     addressEntities.add(customerAddressEntity.getAddress()));
         }
         return addressEntities;
+    }
+
+    public AddressEntity getAddressByUUID(final String addressId, final CustomerEntity customer) throws AddressNotFoundException, AuthorizationFailedException {
+        if (addressId == null) {
+            throw new AddressNotFoundException("ANF-005","Address id can not be empty");
+        }
+        AddressEntity address = addressDao.getAddressByAddressId(addressId);
+        if (address == null) {
+            throw new AddressNotFoundException("ANF-003", "No address by this id");
+        }
+
+        CustomerAddressEntity customerAddressEntity = customerAddressDao.getCustomerAddressByAddress(address);
+        if (!customerAddressEntity.getCustomer().getUuid().equals(customer.getUuid())) {
+            throw new AuthorizationFailedException("ATHR-004","You are not authorized to view/update/delete any one else's address");
+        }
+        return address;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public AddressEntity deleteAddress(final AddressEntity addressEntity) {
+        AddressEntity deletedAddress = addressDao.deleteAddress(addressEntity);
+        return deletedAddress;
     }
 
 

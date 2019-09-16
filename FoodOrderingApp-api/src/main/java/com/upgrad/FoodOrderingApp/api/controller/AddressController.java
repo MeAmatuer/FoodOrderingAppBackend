@@ -21,8 +21,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
 public class AddressController {
@@ -84,5 +83,19 @@ public class AddressController {
         AddressListResponse addressListResponse = new AddressListResponse().addresses(addressesList);
         return new ResponseEntity<AddressListResponse>(addressListResponse, HttpStatus.OK);
 
+    }
+
+    @CrossOrigin
+    @RequestMapping(method = DELETE, path = "/address/{address_id}", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<DeleteAddressResponse> deleteAddress(@RequestHeader("authorization") final String authorization, @PathVariable(value = "address_id") final String addressId) throws AuthorizationFailedException, AddressNotFoundException {
+        BearerAuthDecoder bearerAuthDecoder = new BearerAuthDecoder(authorization);
+        final String accessToken = bearerAuthDecoder.getAccessToken();
+        CustomerEntity customer = customerService.getCustomer(accessToken);
+        AddressEntity address = addressService.getAddressByUUID(addressId, customer);
+        AddressEntity deletedAddress = addressService.deleteAddress(address);
+        DeleteAddressResponse deleteAddressResponse = new DeleteAddressResponse()
+                .id(UUID.fromString(deletedAddress.getUuid()))
+                .status("ADDRESS DELETED SUCCESSFULLY");
+        return new ResponseEntity<DeleteAddressResponse>(deleteAddressResponse, HttpStatus.OK);
     }
 }
