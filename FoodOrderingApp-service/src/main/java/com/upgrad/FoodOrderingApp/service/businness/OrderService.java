@@ -6,6 +6,9 @@ import com.upgrad.FoodOrderingApp.service.entity.CouponEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
 import com.upgrad.FoodOrderingApp.service.entity.OrderEntity;
+
+import com.upgrad.FoodOrderingApp.service.entity.*;
+
 import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.CouponNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,5 +84,10 @@ public class OrderService {
     public OrderEntity saveOrder(OrderEntity order) {
         OrderEntity newOrder = orderDao.createNewOrder(order);
         return newOrder;
+    }
+
+    public OrderItemEntity saveOrderItem(OrderItemEntity orderItemEntity) {
+        OrderItemEntity newOrderItemEntity = orderDao.createNewOrderItem(orderItemEntity);
+        return newOrderItemEntity;
     }
 }
