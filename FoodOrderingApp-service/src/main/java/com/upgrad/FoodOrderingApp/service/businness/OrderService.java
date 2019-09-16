@@ -5,11 +5,13 @@ import com.upgrad.FoodOrderingApp.service.dao.OrderDao;
 import com.upgrad.FoodOrderingApp.service.entity.CouponEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
-import com.upgrad.FoodOrderingApp.service.entity.OrdersEntity;
+import com.upgrad.FoodOrderingApp.service.entity.OrderEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.CouponNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -41,10 +43,10 @@ public class OrderService {
     }
 
 
-    public List<OrdersEntity> getPastOrders(String accessToken) throws AuthorizationFailedException {
+    public List<OrderEntity> getPastOrders(String accessToken) throws AuthorizationFailedException {
         checkAccessToken(accessToken);
         CustomerEntity customerEntity = customerAuthDao.findByAccessToken(accessToken).getCustomer();
-        List<OrdersEntity> pastOrders = orderDao.getPastOrders(customerEntity);
+        List<OrderEntity> pastOrders = orderDao.getPastOrders(customerEntity);
         return pastOrders;
     }
 
@@ -65,7 +67,7 @@ public class OrderService {
         }
     }
 
-    public CouponEntity getCouponByUUID(UUID couponId) throws CouponNotFoundException {
+    public CouponEntity getCouponByCouponId(UUID couponId) throws CouponNotFoundException {
 
         CouponEntity coupon = orderDao.getCouponByUUID(couponId);
         if(coupon == null){
@@ -75,8 +77,9 @@ public class OrderService {
         return coupon;
     }
 
-    public OrdersEntity createOrder(OrdersEntity order) {
-        OrdersEntity newOrder = orderDao.createNewOrder(order);
+    @Transactional(propagation = Propagation.REQUIRED)
+    public OrderEntity saveOrder(OrderEntity order) {
+        OrderEntity newOrder = orderDao.createNewOrder(order);
         return newOrder;
     }
 }

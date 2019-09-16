@@ -5,7 +5,7 @@ import com.upgrad.FoodOrderingApp.api.provider.BearerAuthDecoder;
 import com.upgrad.FoodOrderingApp.service.businness.*;
 import com.upgrad.FoodOrderingApp.service.entity.CouponEntity;
 import com.upgrad.FoodOrderingApp.service.entity.OrderItemEntity;
-import com.upgrad.FoodOrderingApp.service.entity.OrdersEntity;
+import com.upgrad.FoodOrderingApp.service.entity.OrderEntity;
 import com.upgrad.FoodOrderingApp.service.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -51,10 +51,10 @@ public class OrderController {
     public ResponseEntity<List<OrderList>> getPastOrders(final String authorization) throws AuthorizationFailedException {
         BearerAuthDecoder bearerAuthDecoder = new BearerAuthDecoder(authorization);
         String accessToken = bearerAuthDecoder.getAccessToken();
-        List<OrdersEntity> orders = orderService.getPastOrders(accessToken);
+        List<OrderEntity> orders = orderService.getPastOrders(accessToken);
 
         List<OrderList> orderList = new LinkedList<OrderList>();
-        for (OrdersEntity order : orders) {
+        for (OrderEntity order : orders) {
             List<OrderItemEntity> itemList = order.getOrderItem();
             List<ItemQuantityResponse> itemQuantityResponses = new LinkedList<ItemQuantityResponse>();
             for (OrderItemEntity itemEntity : itemList) {
@@ -104,23 +104,23 @@ public class OrderController {
     public ResponseEntity<SaveOrderResponse> saveCustomerOrder(final SaveOrderRequest orderRequest, String authorization) throws AuthorizationFailedException, PaymentMethodNotFoundException, RestaurantNotFoundException, ItemNotFoundException, CouponNotFoundException, AddressNotFoundException {
         BearerAuthDecoder bearerAuthDecoder = new BearerAuthDecoder(authorization);
         String accessToken = bearerAuthDecoder.getAccessToken();
-        final OrdersEntity order = getOrderObject(orderRequest);
-        final OrdersEntity createdOrder = orderService.createOrder(order);
+        final OrderEntity order = getOrderObject(orderRequest);
+        final OrderEntity createdOrder = orderService.saveOrder(order);
         SaveOrderResponse orderResponse = new SaveOrderResponse()
                 .id(createdOrder.getUuid().toString())
                 .status("ORDER SUCCESSFULLY PLACED");
         return new ResponseEntity<SaveOrderResponse>(orderResponse, HttpStatus.CREATED);
     }
 
-    private OrdersEntity getOrderObject(SaveOrderRequest orderRequest) throws CouponNotFoundException, PaymentMethodNotFoundException, AddressNotFoundException, RestaurantNotFoundException, ItemNotFoundException {
-        OrdersEntity ordersEntity = new OrdersEntity();
+    private OrderEntity getOrderObject(SaveOrderRequest orderRequest) throws CouponNotFoundException, PaymentMethodNotFoundException, AddressNotFoundException, RestaurantNotFoundException, ItemNotFoundException {
+        OrderEntity ordersEntity = new OrderEntity();
         ordersEntity.setBill(orderRequest.getBill());
-        ordersEntity.setCoupon(orderService.getCouponByUUID(orderRequest.getCouponId()));
+        ordersEntity.setCoupon(orderService.getCouponByCouponId(orderRequest.getCouponId()));
         ordersEntity.setDiscount(orderRequest.getDiscount());
         ordersEntity.setDate(ZonedDateTime.now());
-        ordersEntity.setPayment(paymentService.getPaymentById(orderRequest.getPaymentId()));
-        ordersEntity.setAddress(addressService.getAddressById(orderRequest.getAddressId()));
-        ordersEntity.setRestaurant(restaurantService.getRestaurantById(orderRequest.getRestaurantId()));
+        ordersEntity.setPayment(paymentService.getPaymentByUUID(orderRequest.getPaymentId()));
+        ordersEntity.setAddress(addressService.getAddressByUUID(orderRequest.getAddressId()));
+        ordersEntity.setRestaurant(restaurantService.restaurantByUUID(orderRequest.getRestaurantId()));
         List<ItemQuantity> itemQuantities = orderRequest.getItemQuantities();
         List<OrderItemEntity> orderItemEntities = new LinkedList<>();
         for (ItemQuantity itemQuantity : itemQuantities) {

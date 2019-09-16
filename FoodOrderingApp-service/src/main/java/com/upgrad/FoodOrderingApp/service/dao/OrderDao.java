@@ -2,7 +2,7 @@ package com.upgrad.FoodOrderingApp.service.dao;
 
 import com.upgrad.FoodOrderingApp.service.entity.CouponEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
-import com.upgrad.FoodOrderingApp.service.entity.OrdersEntity;
+import com.upgrad.FoodOrderingApp.service.entity.OrderEntity;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -29,10 +29,10 @@ public class OrderDao {
         return couponEntity;
     }
 
-    public List<OrdersEntity> getPastOrders(CustomerEntity customerEntity) {
-        final List<OrdersEntity> pastOrders;
+    public List<OrderEntity> getPastOrders(CustomerEntity customerEntity) {
+        final List<OrderEntity> pastOrders;
         try {
-            pastOrders = entityManager.createNamedQuery("pastOrdersByDate", OrdersEntity.class)
+            pastOrders = entityManager.createNamedQuery("pastOrdersByDate", OrderEntity.class)
                     .setParameter("customer", customerEntity)
                     .getResultList();
             return pastOrders;
@@ -53,7 +53,7 @@ public class OrderDao {
         }
     }
 
-    public OrdersEntity createNewOrder(OrdersEntity order) {
+    public OrderEntity createNewOrder(OrderEntity order) {
         entityManager.persist(order);
         return order;
     }
