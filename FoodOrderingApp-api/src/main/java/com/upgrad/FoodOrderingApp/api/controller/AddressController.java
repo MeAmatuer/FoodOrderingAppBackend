@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -64,6 +65,7 @@ public class AddressController {
         final String accessToken = bearerAuthDecoder.getAccessToken();
         CustomerEntity existingCustomer = customerService.getCustomer(accessToken);
         List<AddressEntity> addresses = addressService.getAllAddress(existingCustomer);
+        Collections.reverse(addresses);
         List<AddressList> addressesList = new LinkedList<>();
         addresses.forEach(address -> {
             AddressListState addressListState = new AddressListState();
