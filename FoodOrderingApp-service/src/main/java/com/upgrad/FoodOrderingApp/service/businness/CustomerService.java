@@ -5,12 +5,14 @@ import com.upgrad.FoodOrderingApp.service.dao.CustomerDao;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AuthenticationFailedException;
+import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.SignUpRestrictedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -75,6 +77,25 @@ public class CustomerService {
         else {
             throw new AuthenticationFailedException("ATH-002", "Invalid Credentials");
         }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public CustomerAuthEntity logout(final String accessToken) throws AuthorizationFailedException {
+        final ZonedDateTime now;
+        CustomerAuthEntity loggedInCustomerAuth = customerAuthDao.findCustAuthByAccessToken(accessToken);
+        if (loggedInCustomerAuth == null) {
+            throw new AuthorizationFailedException("ATHR-001", "Customer is not Logged in.");
+        }
+        if (loggedInCustomerAuth.getLogoutAt() != null) {
+            throw new AuthorizationFailedException("ATHR-002", "Customer is logged out. Log in again to access this endpoint.");
+        }
+        now = ZonedDateTime.now(ZoneId.systemDefault());
+        if (loggedInCustomerAuth.getExpiresAt().isBefore(now) ||  loggedInCustomerAuth.getExpiresAt().isEqual(now)) {
+            throw new AuthorizationFailedException("ATHR-003", "Your session is expired. Log in again to access this endpoint.");
+        }
+        loggedInCustomerAuth.setLogoutAt(ZonedDateTime.now(ZoneId.systemDefault()));
+        CustomerAuthEntity loggedOutCustomerAuth = customerAuthDao.update(loggedInCustomerAuth);
+        return loggedOutCustomerAuth;
     }
 
     private boolean fieldsComplete(CustomerEntity customer) throws SignUpRestrictedException {
