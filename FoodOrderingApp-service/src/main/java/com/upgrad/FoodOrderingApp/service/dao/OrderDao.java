@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 public class OrderDao {
@@ -38,5 +39,22 @@ public class OrderDao {
         }catch (NoResultException nre){
             return null;
         }
+    }
+
+    public CouponEntity getCouponByUUID(UUID couponId) {
+        final CouponEntity couponEntity;
+        try {
+            couponEntity = entityManager.createNamedQuery("couponByUUID", CouponEntity.class)
+                    .setParameter("couponId", couponId)
+                    .getSingleResult();
+            return couponEntity;
+        }catch (NoResultException nre){
+            return null;
+        }
+    }
+
+    public OrdersEntity createNewOrder(OrdersEntity order) {
+        entityManager.persist(order);
+        return order;
     }
 }

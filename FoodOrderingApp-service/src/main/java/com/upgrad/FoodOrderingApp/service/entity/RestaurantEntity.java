@@ -8,6 +8,9 @@ import java.util.List;
 
 @Entity
 @Table(name="restaurant")
+@NamedQueries({
+        @NamedQuery(name = "restaurantById", query = "select r from RestaurantEntity r where r.uuid = :restaurantId")
+})
 public class RestaurantEntity implements Serializable {
 
     @Id

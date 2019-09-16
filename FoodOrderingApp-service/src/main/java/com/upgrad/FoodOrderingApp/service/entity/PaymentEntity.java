@@ -9,6 +9,9 @@ import java.util.UUID;
 
 @Entity
 @Table(name="payment")
+@NamedQueries({
+        @NamedQuery(name = "paymentsByPaymentId", query = "select p from PaymentEntity p where p.uuid = :paymentId")
+})
 public class PaymentEntity implements Serializable {
 
     @Id
