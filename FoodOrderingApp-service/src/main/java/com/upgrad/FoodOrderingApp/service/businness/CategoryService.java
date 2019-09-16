@@ -25,6 +25,6 @@ public class CategoryService {
 
     public List<CategoryEntity> getCategoriesByRestaurant(String RestaurantUuid){
         RestaurantEntity restaurantEntity = restaurantDao.getRestaurantByUuid(RestaurantUuid);
-        return restaurantEntity.getCategories().stream().sorted(Comparator.comparing(CategoryEntity::getCategory_name)).collect(Collectors.toList());
+        return restaurantEntity.getCategories().stream().sorted(Comparator.comparing(CategoryEntity::getCategoryName)).collect(Collectors.toList());
     }
 }

@@ -43,7 +43,7 @@ public class AddressEntity implements Serializable {
 
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="state_id")
-    private StateEntity state_id;
+    private StateEntity State;
 
     @NotNull
     @Column(name="active")
@@ -57,6 +57,18 @@ public class AddressEntity implements Serializable {
 
     @OneToMany(mappedBy = "address", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private List<OrdersEntity> orders = new ArrayList<>();
+
+    public AddressEntity() {}
+
+    public AddressEntity(String uuid, String flatBuilNo, String locality, String city, String pincode, StateEntity stateEntity) {
+        this.uuid = uuid;
+        this.flat_buil_number = flatBuilNo;
+        this.locality = locality;
+        this.city = city;
+        this.pincode = pincode;
+        this.State = stateEntity;
+        this.active = 1;
+    }
 
     public List<OrdersEntity> getOrders() {
         return orders;
@@ -114,12 +126,12 @@ public class AddressEntity implements Serializable {
         this.pincode = pincode;
     }
 
-    public StateEntity getState_id() {
-        return state_id;
+    public StateEntity getState() {
+        return State;
     }
 
-    public void setState_id(StateEntity state_id) {
-        this.state_id = state_id;
+    public void setState(StateEntity state) {
+        State = state;
     }
 
     public Integer getActive() {

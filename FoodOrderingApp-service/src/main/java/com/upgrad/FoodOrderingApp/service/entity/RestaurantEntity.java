@@ -4,6 +4,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,7 @@ import java.util.List;
 @Table(name="restaurant")
 @NamedQueries({
 
-        @NamedQuery(name = "getAllRestaurantsByRating", query = "select q from RestaurantEntity q order by q.customer_rating desc"),
+        @NamedQuery(name = "getAllRestaurantsByRating", query = "select q from RestaurantEntity q order by q.CustomerRating desc"),
         @NamedQuery(name = "restaurantByUUID", query = "select q from RestaurantEntity q where q.uuid = :uuid"),
 })
 
@@ -31,24 +32,24 @@ public class RestaurantEntity implements Serializable {
     @Column(name="restaurant_name")
     @Size(max=30)
     @NotNull
-    private String reastaurant_name;
+    private String RestaurantName;
 
     @Column(name="photo_url")
     @Size(max=255)
     @NotNull
-    private String photo_url;
+    private String PhotoUrl;
 
     @Column(name="customer_rating")
     @NotNull
-    private BigDecimal customer_rating;
+    private BigDecimal CustomerRating;
 
     @Column(name="average_price_for_two")
     @NotNull
-    private Integer average_price_for_two;
+    private Integer AvgPrice;
 
     @Column(name="number_of_customers_rated")
     @NotNull
-    private Integer number_of_customers_rated;
+    private Integer NumberCustomersRated;
 
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="address_id")
@@ -97,44 +98,44 @@ public class RestaurantEntity implements Serializable {
         this.uuid = uuid;
     }
 
-    public String getReastaurant_name() {
-        return reastaurant_name;
+    public String getRestaurantName() {
+        return RestaurantName;
     }
 
-    public void setReastaurant_name(String reastaurant_name) {
-        this.reastaurant_name = reastaurant_name;
+    public void setRestaurantName(String restaurantName) {
+        RestaurantName = restaurantName;
     }
 
-    public String getPhoto_url() {
-        return photo_url;
+    public String getPhotoUrl() {
+        return PhotoUrl;
     }
 
-    public void setPhoto_url(String photo_url) {
-        this.photo_url = photo_url;
+    public void setPhotoUrl(String photoUrl) {
+        PhotoUrl = photoUrl;
     }
 
-    public BigDecimal getCustomer_rating() {
-        return customer_rating;
+    public Double getCustomerRating() {
+        return CustomerRating.doubleValue();
     }
 
-    public void setCustomer_rating(BigDecimal customer_rating) {
-        this.customer_rating = customer_rating;
+    public void setCustomerRating(Double customerRating) {
+        this.CustomerRating = new BigDecimal(customerRating).setScale(2, RoundingMode.HALF_UP);
     }
 
-    public Integer getAverage_price_for_two() {
-        return average_price_for_two;
+    public Integer getAvgPrice() {
+        return AvgPrice;
     }
 
-    public void setAverage_price_for_two(Integer average_price_for_two) {
-        this.average_price_for_two = average_price_for_two;
+    public void setAvgPrice(Integer avgPrice) {
+        AvgPrice = avgPrice;
     }
 
-    public Integer getNumber_of_customers_rated() {
-        return number_of_customers_rated;
+    public Integer getNumberCustomersRated() {
+        return NumberCustomersRated;
     }
 
-    public void setNumber_of_customers_rated(Integer number_of_customers_rated) {
-        this.number_of_customers_rated = number_of_customers_rated;
+    public void setNumberCustomersRated(Integer numberCustomersRated) {
+        NumberCustomersRated = numberCustomersRated;
     }
 
     public AddressEntity getAddress() {

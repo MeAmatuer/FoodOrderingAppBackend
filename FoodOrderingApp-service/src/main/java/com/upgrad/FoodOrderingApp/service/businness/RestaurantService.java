@@ -27,7 +27,7 @@ public class RestaurantService {
 
     //This method returns all the restaurants according to the customer ratings
 
-    public List<RestaurantEntity> getAllRestaurantsByRating(){
+    public List<RestaurantEntity> restaurantsByRating(){
         List<RestaurantEntity> restaurantEntities = restaurantDao.getAllRestaurantsByRating();
         return restaurantEntities;
     }
@@ -35,7 +35,7 @@ public class RestaurantService {
     //This method checks for the restaurant search field if its empty it throws corresponding exception
     //It also returns the restaurants even if there is partial match in the restaurant in DB and the resto. mentioned in search field
 
-    public List<RestaurantEntity> getRestaurantsByName(final String restaurantName) throws RestaurantNotFoundException {
+    public List<RestaurantEntity> restaurantsByName(final String restaurantName) throws RestaurantNotFoundException {
         if(restaurantName.isEmpty()){
             throw new RestaurantNotFoundException("RNF-003","Restaurant name field should not be empty");
         }
@@ -46,7 +46,7 @@ public class RestaurantService {
         //matching restaurants with the restaurant name mentioned in the search field and if matched populating the resto. in the matched resto. list
 
         for(RestaurantEntity restaurantEntity: restaurantListByRating){
-            if(restaurantEntity.getReastaurant_name().toLowerCase().contains(restaurantName.toLowerCase())){
+            if(restaurantEntity.getRestaurantName().toLowerCase().contains(restaurantName.toLowerCase())){
                 matchingRestaurantList.add(restaurantEntity);
             }
         }
@@ -59,7 +59,7 @@ public class RestaurantService {
     //If a input category is not present then it returns another CNF exception No Category By this id
     //If the input category Id is present then it returns all restaurants in that category in the alphabetical order
 
-    public List<RestaurantEntity> getRestaurantsByCategoryId(final String categoryId) throws CategoryNotFoundException{
+    public List<RestaurantEntity> restaurantByCategory(final String categoryId) throws CategoryNotFoundException{
 
         if(categoryId.equals("")){
             throw new CategoryNotFoundException("CNF-001", "Category id field should not be empty");
@@ -72,11 +72,11 @@ public class RestaurantService {
             }
 
             List<RestaurantEntity> restaurantListByCategoryId = categoryEntity.getRestaurants();
-            restaurantListByCategoryId.sort(Comparator.comparing(RestaurantEntity::getReastaurant_name));
+            restaurantListByCategoryId.sort(Comparator.comparing(RestaurantEntity::getRestaurantName));
             return restaurantListByCategoryId;
        }
 
-       public RestaurantEntity getRestaurantsByUuid(String uuid) throws RestaurantNotFoundException{
+       public RestaurantEntity restaurantByUUID(String uuid) throws RestaurantNotFoundException{
             if(uuid.equals("")){
                 throw new RestaurantNotFoundException("RNF-002","Restaurant id field should not be empty");
             }
@@ -99,10 +99,12 @@ public class RestaurantService {
            }
 
            Double newAvgRating =
-                   ((restaurantEntity.getCustomer_rating().doubleValue())*((double)restaurantEntity.getNumber_of_customers_rated())+ newRating)/((double)restaurantEntity.getNumber_of_customers_rated()+1);
+                   ((restaurantEntity.getCustomerRating().doubleValue())*
+                           ((double)restaurantEntity.getNumberCustomersRated())+ newRating)/
+                           ((double)restaurantEntity.getNumberCustomersRated()+1);
 
-           restaurantEntity.setCustomer_rating(new BigDecimal(newAvgRating));
-           restaurantEntity.setNumber_of_customers_rated(restaurantEntity.getNumber_of_customers_rated()+1);
+           restaurantEntity.setCustomerRating(newAvgRating);
+           restaurantEntity.setNumberCustomersRated(restaurantEntity.getNumberCustomersRated()+1);
 
            return restaurantDao.updateRestaurantEntity(restaurantEntity);
 

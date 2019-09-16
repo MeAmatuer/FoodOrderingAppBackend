@@ -27,7 +27,7 @@ public class ItemService {
     private CategoryDao categoryDao;
 
     //Returns category items based on the input restaurant Id and the category Id
-    public List<ItemEntity> getItemsByCategoryAndRestaurantId(String restaurantId, String categoryId){
+    public List<ItemEntity> getItemsByCategoryAndRestaurant(String restaurantId, String categoryId){
         RestaurantEntity restaurantEntity = restaurantDao.getRestaurantByUuid(restaurantId);
         CategoryEntity categoryEntity = categoryDao.getCategoryByUuid(categoryId);
         List<ItemEntity> restaurantItemList = new ArrayList<>();
@@ -39,7 +39,7 @@ public class ItemService {
                 }
             }
         }
-        restaurantItemList.sort(Comparator.comparing(ItemEntity::getItem_name));
+        restaurantItemList.sort(Comparator.comparing(ItemEntity::getItemName));
         return restaurantItemList;
 
     }

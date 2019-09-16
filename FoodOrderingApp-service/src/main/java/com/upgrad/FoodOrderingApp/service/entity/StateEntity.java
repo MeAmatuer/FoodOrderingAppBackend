@@ -26,10 +26,19 @@ public class StateEntity implements Serializable {
     @Column(name="state_name")
     @Size(max=30)
     @NotNull
-    private String state_name;
+    private String stateName;
 
-    @OneToMany(mappedBy = "state_id", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
+    public StateEntity() {}
+
+    public StateEntity(String uuid, String name) {
+        this.uuid = uuid;
+        this.stateName = name;
+    }
+
+    /*@OneToMany(mappedBy = "state_id", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private List<AddressEntity> Addresses = new ArrayList<>();
+*/
+
 
     public Integer getId() {
         return id;
@@ -47,19 +56,19 @@ public class StateEntity implements Serializable {
         this.uuid = uuid;
     }
 
-    public String getState_name() {
-        return state_name;
+    public String getStateName() {
+        return stateName;
     }
 
-    public void setState_name(String state_name) {
-        this.state_name = state_name;
+    public void setStateName(String stateName) {
+        this.stateName = stateName;
     }
 
-    public List<AddressEntity> getAddresses() {
+   /* public List<AddressEntity> getAddresses() {
         return Addresses;
     }
-
     public void setAddresses(List<AddressEntity> addresses) {
         Addresses = addresses;
-    }
+    }*/
+
 }

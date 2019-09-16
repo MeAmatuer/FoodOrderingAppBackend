@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -43,7 +44,7 @@ public class RestaurantController {
     @RequestMapping(method = RequestMethod.GET, path = "/restaurant", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<RestaurantListResponse> getAllRestaurants() {
 
-        List<RestaurantEntity> restaurantEntities = restaurantService.getAllRestaurantsByRating();
+        List<RestaurantEntity> restaurantEntities = restaurantService.restaurantsByRating();
 
         RestaurantListResponse restaurantListResponse = new RestaurantListResponse();
 
@@ -52,8 +53,8 @@ public class RestaurantController {
             //Extracting state field of a restaurant
 
             RestaurantDetailsResponseAddressState addressState = new RestaurantDetailsResponseAddressState()
-                    .id(UUID.fromString(restaurantEntity.getAddress().getState_id().getUuid())).
-                            stateName(restaurantEntity.getAddress().getState_id().getState_name());
+                    .id(UUID.fromString(restaurantEntity.getAddress().getState().getUuid())).
+                            stateName(restaurantEntity.getAddress().getState().getStateName());
 
             //Extracting address field of a restaurant
 
@@ -66,14 +67,14 @@ public class RestaurantController {
             //Extracting category field of a restaurant
 
             String restaurantCategories = categoryService.getCategoriesByRestaurant(restaurantEntity.getUuid())
-                    .stream().map(rc -> String.valueOf(rc.getCategory_name())).collect(Collectors.joining(","));
+                    .stream().map(rc -> String.valueOf(rc.getCategoryName())).collect(Collectors.joining(","));
 
             //Populating restaurant List with all necessary fields
 
             RestaurantList restaurantList = new RestaurantList().id(UUID.fromString(restaurantEntity.getUuid())).
-                    restaurantName(restaurantEntity.getReastaurant_name()).photoURL(restaurantEntity.getPhoto_url())
-                    .customerRating(restaurantEntity.getCustomer_rating()).
-                            averagePrice(restaurantEntity.getAverage_price_for_two()).numberCustomersRated(restaurantEntity.getNumber_of_customers_rated())
+                    restaurantName(restaurantEntity.getRestaurantName()).photoURL(restaurantEntity.getPhotoUrl())
+                    .customerRating(new BigDecimal(restaurantEntity.getCustomerRating()))
+                    .averagePrice(restaurantEntity.getAvgPrice()).numberCustomersRated(restaurantEntity.getNumberCustomersRated())
                     .address(address).categories(restaurantCategories);
 
             //Populating response field with all the restaurant items
@@ -95,7 +96,7 @@ public class RestaurantController {
     public ResponseEntity<RestaurantListResponse> getRestaurantsByName(@PathVariable("restaurant_name") final String restaurantName)
             throws RestaurantNotFoundException {
 
-        List<RestaurantEntity> matchedRestaurantsByNameList = restaurantService.getRestaurantsByName(restaurantName);
+        List<RestaurantEntity> matchedRestaurantsByNameList = restaurantService.restaurantsByName(restaurantName);
 
         RestaurantListResponse listResponse = new RestaurantListResponse();
 
@@ -108,8 +109,8 @@ public class RestaurantController {
             //Extracting state field of a restaurant
 
             RestaurantDetailsResponseAddressState responseAddressState = new RestaurantDetailsResponseAddressState()
-                    .id(UUID.fromString(restaurantEntity.getAddress().getState_id().getUuid())).
-                            stateName(restaurantEntity.getAddress().getState_id().getState_name());
+                    .id(UUID.fromString(restaurantEntity.getAddress().getState().getUuid())).
+                            stateName(restaurantEntity.getAddress().getState().getStateName());
 
             //Extracting address field of a restaurant
 
@@ -122,14 +123,14 @@ public class RestaurantController {
             //Extracting categories field of a restaurant
 
             String categories = categoryService.getCategoriesByRestaurant(restaurantEntity.getUuid())
-                    .stream().map(rc -> String.valueOf(rc.getCategory_name())).collect(Collectors.joining(","));
+                    .stream().map(rc -> String.valueOf(rc.getCategoryName())).collect(Collectors.joining(","));
 
             //Populating restaurant List with all necessary fields
 
             RestaurantList restaurantList = new RestaurantList().id(UUID.fromString(restaurantEntity.getUuid())).
-                    restaurantName(restaurantEntity.getReastaurant_name()).photoURL(restaurantEntity.getPhoto_url())
-                    .customerRating(restaurantEntity.getCustomer_rating()).
-                            averagePrice(restaurantEntity.getAverage_price_for_two()).numberCustomersRated(restaurantEntity.getNumber_of_customers_rated())
+                    restaurantName(restaurantEntity.getRestaurantName()).photoURL(restaurantEntity.getPhotoUrl())
+                    .customerRating(new BigDecimal(restaurantEntity.getCustomerRating())).
+                            averagePrice(restaurantEntity.getAvgPrice()).numberCustomersRated(restaurantEntity.getNumberCustomersRated())
                     .address(responseAddress).categories(categories);
 
             //Populating response field with all the restaurant items
@@ -153,7 +154,7 @@ public class RestaurantController {
     public ResponseEntity<RestaurantListResponse> getRestaurantsByCategoryId(@PathVariable("category_id") final String categoryId)
             throws CategoryNotFoundException {
 
-        List<RestaurantEntity> restaurantListByCategoryId = restaurantService.getRestaurantsByCategoryId(categoryId);
+        List<RestaurantEntity> restaurantListByCategoryId = restaurantService.restaurantByCategory(categoryId);
 
         RestaurantListResponse restaurantResponseByCategoryId = new RestaurantListResponse();
 
@@ -164,8 +165,8 @@ public class RestaurantController {
         for (RestaurantEntity restaurantEntity : restaurantListByCategoryId) {
             //Extracting state field of a restaurant
             RestaurantDetailsResponseAddressState state = new RestaurantDetailsResponseAddressState()
-                    .id(UUID.fromString(restaurantEntity.getAddress().getState_id().getUuid())).
-                            stateName(restaurantEntity.getAddress().getState_id().getState_name());
+                    .id(UUID.fromString(restaurantEntity.getAddress().getState().getUuid())).
+                            stateName(restaurantEntity.getAddress().getState().getStateName());
 
             //Extracting address field of a restaurant
             RestaurantDetailsResponseAddress responseAddress = new RestaurantDetailsResponseAddress().
@@ -176,16 +177,16 @@ public class RestaurantController {
 
             //Extracting categories field of a restaurant
             String categories = categoryService.getCategoriesByRestaurant(restaurantEntity.getUuid())
-                    .stream().map(rc -> String.valueOf(rc.getCategory_name())).collect(Collectors.joining(","));
+                    .stream().map(rc -> String.valueOf(rc.getCategoryName())).collect(Collectors.joining(","));
 
 
             //Populating restaurant List with all necessary fields
 
             RestaurantList restaurantsByCategory = new RestaurantList().id(UUID.fromString(restaurantEntity.getUuid())).
-                    restaurantName(restaurantEntity.getReastaurant_name()).photoURL(restaurantEntity.getPhoto_url())
-                    .customerRating(restaurantEntity.getCustomer_rating())
-                    .averagePrice(restaurantEntity.getAverage_price_for_two())
-                    .numberCustomersRated(restaurantEntity.getNumber_of_customers_rated())
+                    restaurantName(restaurantEntity.getRestaurantName()).photoURL(restaurantEntity.getPhotoUrl())
+                    .customerRating(new BigDecimal(restaurantEntity.getCustomerRating()))
+                    .averagePrice(restaurantEntity.getAvgPrice())
+                    .numberCustomersRated(restaurantEntity.getNumberCustomersRated())
                     .address(responseAddress).categories(categories);
 
             //Populating response field with all the restaurant items
@@ -201,12 +202,12 @@ public class RestaurantController {
     public ResponseEntity<RestaurantDetailsResponse> getRestaurantById(@PathVariable("restaurant_id") final String restaurantId)
             throws RestaurantNotFoundException {
 
-        RestaurantEntity restaurantByRestaurantId = restaurantService.getRestaurantsByUuid(restaurantId);
+        RestaurantEntity restaurantByRestaurantId = restaurantService.restaurantByUUID(restaurantId);
 
         //Extracting state field of a restaurant
         RestaurantDetailsResponseAddressState state = new RestaurantDetailsResponseAddressState()
-                .id(UUID.fromString(restaurantByRestaurantId.getAddress().getState_id().getUuid())).
-                        stateName(restaurantByRestaurantId.getAddress().getState_id().getState_name());
+                .id(UUID.fromString(restaurantByRestaurantId.getAddress().getState().getUuid())).
+                        stateName(restaurantByRestaurantId.getAddress().getState().getStateName());
 
         //Extracting address field of a restaurant
         RestaurantDetailsResponseAddress responseAddress = new RestaurantDetailsResponseAddress().
@@ -219,11 +220,11 @@ public class RestaurantController {
         //Populating the restaurant with different restaurant fields like restaurant id, restaurant name, photo url, customer rating etc...
         RestaurantDetailsResponse restaurantDetailsResponse = new RestaurantDetailsResponse()
                 .id(UUID.fromString(restaurantByRestaurantId.getUuid()))
-                .restaurantName(restaurantByRestaurantId.getReastaurant_name())
-                .photoURL(restaurantByRestaurantId.getPhoto_url())
-                .customerRating(restaurantByRestaurantId.getCustomer_rating())
-                .averagePrice(restaurantByRestaurantId.getAverage_price_for_two())
-                .numberCustomersRated(restaurantByRestaurantId.getNumber_of_customers_rated())
+                .restaurantName(restaurantByRestaurantId.getRestaurantName())
+                .photoURL(restaurantByRestaurantId.getPhotoUrl())
+                .customerRating(new BigDecimal(restaurantByRestaurantId.getCustomerRating()))
+                .averagePrice(restaurantByRestaurantId.getAvgPrice())
+                .numberCustomersRated(restaurantByRestaurantId.getNumberCustomersRated())
                 .address(responseAddress);
 
         //Fetching the restaurant categories and then populating the category details
@@ -232,15 +233,15 @@ public class RestaurantController {
         for (CategoryEntity categoryEntity : restaurantCategoryList) {
             CategoryList restaurantCategories = new CategoryList()
                     .id(UUID.fromString(categoryEntity.getUuid()))
-                    .categoryName(categoryEntity.getCategory_name());
+                    .categoryName(categoryEntity.getCategoryName());
 
             //Fetching the category items and then populating its details
-            List<ItemEntity> categoryItems = itemService.getItemsByCategoryAndRestaurantId(restaurantId, categoryEntity.getUuid());
+            List<ItemEntity> categoryItems = itemService.getItemsByCategoryAndRestaurant(restaurantId, categoryEntity.getUuid());
 
                 for (ItemEntity itemEntity : categoryItems) {
                     ItemList itemList = new ItemList()
                             .id(UUID.fromString(itemEntity.getUuid()))
-                            .itemName(itemEntity.getItem_name())
+                            .itemName(itemEntity.getItemName())
                             .price(itemEntity.getPrice())
                             .itemType(ItemList.ItemTypeEnum.fromValue(itemEntity.getType().getValue()));
                     restaurantCategories.addItemListItem(itemList);
@@ -267,12 +268,12 @@ public class RestaurantController {
             String accessToken = authorization.split("Bearer ")[1];
             customerService.getCustomer(accessToken);
 
-            RestaurantEntity restaurantEntity = restaurantService.getRestaurantsByUuid(restaurantId);
+            RestaurantEntity restaurantEntity = restaurantService.restaurantByUUID(restaurantId);
 
             RestaurantEntity updatedRestaurantEntity = restaurantService.updateRestaurantRating(restaurantEntity, customerRating);
 
             RestaurantUpdatedResponse restaurantUpdatedResponse = new RestaurantUpdatedResponse()
-                    .id(UUID.fromString(updatedRestaurantEntity.getUuid()))
+                    .id(UUID.fromString(restaurantId))
                     .status("RESTAURANT RATING UPDATED SUCCESSFULLY");
             return new ResponseEntity<RestaurantUpdatedResponse>(restaurantUpdatedResponse,HttpStatus.OK);
         }
