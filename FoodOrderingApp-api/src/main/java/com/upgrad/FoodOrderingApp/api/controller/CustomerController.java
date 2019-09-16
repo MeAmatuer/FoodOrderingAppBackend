@@ -80,16 +80,6 @@ public class CustomerController {
         return new ResponseEntity<LogoutResponse>(logoutResponse, HttpStatus.OK);
     }
 
-    private boolean fieldsComplete(CustomerEntity customer) throws SignUpRestrictedException {
-        if ( customer.getFirstName().isEmpty()||
-                customer.getContactNumber().isEmpty()||
-                customer.getEmail().isEmpty() ||
-                customer.getPassword().isEmpty() )
-            return false;
-        else
-            return true;
-    }
-
     @CrossOrigin
     @RequestMapping(method = PUT, path = "/customer", consumes = APPLICATION_JSON_UTF8_VALUE, produces = APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<UpdateCustomerResponse> updateCustomer(@RequestHeader("authorization") final String authorization, @RequestBody(required = false) final UpdateCustomerRequest updateCustomerRequest) throws UpdateCustomerException, AuthorizationFailedException {
@@ -110,6 +100,35 @@ public class CustomerController {
                 .lastName(updatedCustomer.getLastName())
                 .status("CUSTOMER DETAILS UPDATED SUCCESSFULLY");
         return new ResponseEntity<UpdateCustomerResponse>(updateCustomerResponse, HttpStatus.OK);
+    }
+
+    @CrossOrigin
+    @RequestMapping(method = PUT, path = "/customer/password", consumes = APPLICATION_JSON_UTF8_VALUE, produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<UpdatePasswordResponse> updatePassword(@RequestHeader("authorization") final String authorization, @RequestBody(required = false) final UpdatePasswordRequest updatePasswordRequest) throws AuthorizationFailedException, UpdateCustomerException {
+        BearerAuthDecoder bearerAuthDecoder = new BearerAuthDecoder(authorization);
+        final String accessToken = bearerAuthDecoder.getAccessToken();
+
+        final String oldPassword = updatePasswordRequest.getOldPassword();
+        final String newPassword = updatePasswordRequest.getNewPassword();
+        if (oldPassword == "" || newPassword == "") {
+            throw new UpdateCustomerException("UCR-003", "No field should be empty");
+        }
+        CustomerEntity customer= customerService.getCustomer(accessToken);
+        CustomerEntity updatedCustomer = customerService.updateCustomerPassword(oldPassword, newPassword, customer);
+        UpdatePasswordResponse updatePasswordResponse = new UpdatePasswordResponse()
+                .id(updatedCustomer.getUuid())
+                .status("CUSTOMER PASSWORD UPDATED SUCCESSFULLY");
+        return new ResponseEntity<UpdatePasswordResponse>(updatePasswordResponse, HttpStatus.OK);
+    }
+
+    private boolean fieldsComplete(CustomerEntity customer) throws SignUpRestrictedException {
+        if ( customer.getFirstName().isEmpty()||
+                customer.getContactNumber().isEmpty()||
+                customer.getEmail().isEmpty() ||
+                customer.getPassword().isEmpty() )
+            return false;
+        else
+            return true;
     }
 
 }
