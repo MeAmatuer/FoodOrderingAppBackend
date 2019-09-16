@@ -7,7 +7,6 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name="item")
@@ -25,7 +24,7 @@ public class ItemEntity implements Serializable {
     @Column(name="uuid")
     @Size(max=200)
     @NotNull
-    private UUID uuid;
+    private String uuid;
 
     @Column(name="item_name")
     @Size(max=30)
@@ -58,11 +57,11 @@ public class ItemEntity implements Serializable {
         this.id = id;
     }
 
-    public UUID getUuid() {
+    public String getUuid() {
         return uuid;
     }
 
-    public void setUuid(UUID uuid) {
+    public void setUuid(String uuid) {
         this.uuid = uuid;
     }
 

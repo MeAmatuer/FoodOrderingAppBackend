@@ -13,7 +13,7 @@ public class AddressService {
     private AddressDao addressDao;
 
 
-    public AddressEntity getAddressById(String addressId) throws AddressNotFoundException {
+    public AddressEntity getAddressByUUID(String addressId) throws AddressNotFoundException {
 
         AddressEntity addressEntity = addressDao.getAddressById(addressId);
         if(addressEntity == null){

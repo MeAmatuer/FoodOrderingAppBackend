@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import java.util.UUID;
 
 @Repository
 public class ItemDao {
@@ -15,7 +14,7 @@ public class ItemDao {
     private EntityManager entityManager;
 
 
-    public ItemEntity getItemById(UUID itemId) {
+    public ItemEntity getItemById(String itemId) {
 
         try {
             ItemEntity itemEntity = entityManager.createNamedQuery("itemById", ItemEntity.class)

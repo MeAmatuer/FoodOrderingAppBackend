@@ -14,7 +14,7 @@ import java.util.UUID;
         @NamedQuery(name = "pastOrdersByDate", query = "select o from OrdersEntity o where o.customer = :customer order by o.date desc")
 })
 @Table(name="orders")
-public class OrdersEntity implements Serializable {
+public class OrderEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -150,6 +150,6 @@ public class OrdersEntity implements Serializable {
         this.restaurant = restaurant;
     }
 
-    public OrdersEntity() {
+    public OrderEntity() {
     }
 }

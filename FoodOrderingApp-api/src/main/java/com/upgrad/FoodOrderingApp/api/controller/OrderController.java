@@ -4,8 +4,9 @@ import com.upgrad.FoodOrderingApp.api.model.*;
 import com.upgrad.FoodOrderingApp.api.provider.BearerAuthDecoder;
 import com.upgrad.FoodOrderingApp.service.businness.*;
 import com.upgrad.FoodOrderingApp.service.entity.CouponEntity;
+import com.upgrad.FoodOrderingApp.service.entity.ItemEntity;
 import com.upgrad.FoodOrderingApp.service.entity.OrderItemEntity;
-import com.upgrad.FoodOrderingApp.service.entity.OrdersEntity;
+import com.upgrad.FoodOrderingApp.service.entity.OrderEntity;
 import com.upgrad.FoodOrderingApp.service.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.ZonedDateTime;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/")
@@ -51,14 +53,14 @@ public class OrderController {
     public ResponseEntity<List<OrderList>> getPastOrders(final String authorization) throws AuthorizationFailedException {
         BearerAuthDecoder bearerAuthDecoder = new BearerAuthDecoder(authorization);
         String accessToken = bearerAuthDecoder.getAccessToken();
-        List<OrdersEntity> orders = orderService.getPastOrders(accessToken);
+        List<OrderEntity> orders = orderService.getPastOrders(accessToken);
 
         List<OrderList> orderList = new LinkedList<OrderList>();
-        for (OrdersEntity order : orders) {
+        for (OrderEntity order : orders) {
             List<OrderItemEntity> itemList = order.getOrderItem();
             List<ItemQuantityResponse> itemQuantityResponses = new LinkedList<ItemQuantityResponse>();
             for (OrderItemEntity itemEntity : itemList) {
-                ItemQuantityResponseItem item = new ItemQuantityResponseItem().id(itemEntity.getItemId().getUuid()).
+                ItemQuantityResponseItem item = new ItemQuantityResponseItem().id(UUID.fromString(itemEntity.getItemId().getUuid())).
                         itemName(itemEntity.getItemId().getItemName()).itemPrice(itemEntity.getPrice()).type(ItemQuantityResponseItem.TypeEnum.fromValue(itemEntity.getItemId().getType().getValue()));
                 ItemQuantityResponse itemQuantityResponse = new ItemQuantityResponse().quantity(itemEntity.getQuantity()).price(itemEntity.getPrice());
                 itemQuantityResponses.add(itemQuantityResponse);
@@ -104,28 +106,42 @@ public class OrderController {
     public ResponseEntity<SaveOrderResponse> saveCustomerOrder(final SaveOrderRequest orderRequest, String authorization) throws AuthorizationFailedException, PaymentMethodNotFoundException, RestaurantNotFoundException, ItemNotFoundException, CouponNotFoundException, AddressNotFoundException {
         BearerAuthDecoder bearerAuthDecoder = new BearerAuthDecoder(authorization);
         String accessToken = bearerAuthDecoder.getAccessToken();
-        final OrdersEntity order = getOrderObject(orderRequest);
-        final OrdersEntity createdOrder = orderService.createOrder(order);
+        final OrderEntity order = getOrderObject(orderRequest);
+        final OrderEntity createdOrder = orderService.saveOrder(order);
+        List<ItemQuantity> itemQuantities = orderRequest.getItemQuantities();
+        for(ItemQuantity itemQuantity : itemQuantities) {
+
+            OrderItemEntity orderItemEntity = new OrderItemEntity();
+
+            ItemEntity itemEntity = itemService.getItemByUUID(itemQuantity.getItemId().toString());
+
+            orderItemEntity.setItemId(itemEntity);
+            orderItemEntity.setOrderId(order);
+            orderItemEntity.setPrice(itemQuantity.getPrice());
+            orderItemEntity.setQuantity(itemQuantity.getQuantity());
+
+            OrderItemEntity savedOrderItem = orderService.saveOrderItem(orderItemEntity);
+        }
         SaveOrderResponse orderResponse = new SaveOrderResponse()
                 .id(createdOrder.getUuid().toString())
                 .status("ORDER SUCCESSFULLY PLACED");
         return new ResponseEntity<SaveOrderResponse>(orderResponse, HttpStatus.CREATED);
     }
 
-    private OrdersEntity getOrderObject(SaveOrderRequest orderRequest) throws CouponNotFoundException, PaymentMethodNotFoundException, AddressNotFoundException, RestaurantNotFoundException, ItemNotFoundException {
-        OrdersEntity ordersEntity = new OrdersEntity();
+    private OrderEntity getOrderObject(SaveOrderRequest orderRequest) throws CouponNotFoundException, PaymentMethodNotFoundException, AddressNotFoundException, RestaurantNotFoundException, ItemNotFoundException {
+        OrderEntity ordersEntity = new OrderEntity();
         ordersEntity.setBill(orderRequest.getBill());
-        ordersEntity.setCoupon(orderService.getCouponByUUID(orderRequest.getCouponId()));
+        ordersEntity.setCoupon(orderService.getCouponByCouponId(orderRequest.getCouponId()));
         ordersEntity.setDiscount(orderRequest.getDiscount());
         ordersEntity.setDate(ZonedDateTime.now());
-        ordersEntity.setPayment(paymentService.getPaymentById(orderRequest.getPaymentId()));
-        ordersEntity.setAddress(addressService.getAddressById(orderRequest.getAddressId()));
-        ordersEntity.setRestaurant(restaurantService.getRestaurantById(orderRequest.getRestaurantId()));
+        ordersEntity.setPayment(paymentService.getPaymentByUUID(orderRequest.getPaymentId()));
+        ordersEntity.setAddress(addressService.getAddressByUUID(orderRequest.getAddressId()));
+        ordersEntity.setRestaurant(restaurantService.restaurantByUUID(orderRequest.getRestaurantId()));
         List<ItemQuantity> itemQuantities = orderRequest.getItemQuantities();
         List<OrderItemEntity> orderItemEntities = new LinkedList<>();
         for (ItemQuantity itemQuantity : itemQuantities) {
             OrderItemEntity orderItemEntity = new OrderItemEntity();
-            orderItemEntity.setItemId(itemService.getItemById(itemQuantity.getItemId()));
+            orderItemEntity.setItemId(itemService.getItemByUUID(itemQuantity.getItemId().toString()));
             orderItemEntity.setPrice(itemQuantity.getPrice());
             orderItemEntity.setQuantity(itemQuantity.getQuantity());
             orderItemEntities.add(orderItemEntity);

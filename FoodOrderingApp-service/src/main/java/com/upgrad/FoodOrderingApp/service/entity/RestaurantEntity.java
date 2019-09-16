@@ -51,7 +51,7 @@ public class RestaurantEntity implements Serializable {
     private AddressEntity address;
 
     @OneToMany(mappedBy = "restaurant", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
-    private List<OrdersEntity> orders = new ArrayList<>();
+    private List<OrderEntity> orders = new ArrayList<>();
 
     @OneToMany(mappedBy = "restaurantId", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private List<RestaurantCategoryEntity> restaurantCategory = new ArrayList<>();
@@ -123,11 +123,11 @@ public class RestaurantEntity implements Serializable {
         this.address = address;
     }
 
-    public List<OrdersEntity> getOrders() {
+    public List<OrderEntity> getOrders() {
         return orders;
     }
 
-    public void setOrders(List<OrdersEntity> orders) {
+    public void setOrders(List<OrderEntity> orders) {
         this.orders = orders;
     }
 

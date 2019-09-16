@@ -14,7 +14,7 @@ public class PaymentService {
     @Autowired
     private PaymentDao paymentDao;
 
-    public PaymentEntity getPaymentById(UUID paymentId) throws PaymentMethodNotFoundException {
+    public PaymentEntity getPaymentByUUID(UUID paymentId) throws PaymentMethodNotFoundException {
         PaymentEntity paymentEntity = paymentDao.getPayment(paymentId);
         if(paymentEntity == null){
             throw new PaymentMethodNotFoundException("PNF-002", "No payment method found by this id");

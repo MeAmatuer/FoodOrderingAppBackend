@@ -36,7 +36,7 @@ public class CouponEntity implements Serializable {
     private Integer percent;
 
     @OneToMany(mappedBy = "coupon", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
-    private List<OrdersEntity> orders = new ArrayList<>();
+    private List<OrderEntity> orders = new ArrayList<>();
 
     public Integer getId() {
         return id;
@@ -70,11 +70,11 @@ public class CouponEntity implements Serializable {
         this.percent = percent;
     }
 
-    public List<OrdersEntity> getOrders() {
+    public List<OrderEntity> getOrders() {
         return orders;
     }
 
-    public void setOrders(List<OrdersEntity> orders) {
+    public void setOrders(List<OrderEntity> orders) {
         this.orders = orders;
     }
 

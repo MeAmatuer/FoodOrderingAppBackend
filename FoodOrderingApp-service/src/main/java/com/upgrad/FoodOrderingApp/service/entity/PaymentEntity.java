@@ -31,7 +31,7 @@ public class PaymentEntity implements Serializable {
     private String paymentName;
 
     @OneToMany(mappedBy = "payment", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
-    private List<OrdersEntity> orders = new ArrayList<>();
+    private List<OrderEntity> orders = new ArrayList<>();
 
     public Integer getId() {
         return id;
@@ -57,11 +57,11 @@ public class PaymentEntity implements Serializable {
         this.paymentName = paymentName;
     }
 
-    public List<OrdersEntity> getOrders() {
+    public List<OrderEntity> getOrders() {
         return orders;
     }
 
-    public void setOrders(List<OrdersEntity> orders) {
+    public void setOrders(List<OrderEntity> orders) {
         this.orders = orders;
     }
 
