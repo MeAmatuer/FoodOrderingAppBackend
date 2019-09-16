@@ -1,7 +1,6 @@
 package com.upgrad.FoodOrderingApp.api.controller;
 
-import com.upgrad.FoodOrderingApp.api.model.SaveAddressRequest;
-import com.upgrad.FoodOrderingApp.api.model.SaveAddressResponse;
+import com.upgrad.FoodOrderingApp.api.model.*;
 import com.upgrad.FoodOrderingApp.api.provider.BearerAuthDecoder;
 import com.upgrad.FoodOrderingApp.service.businness.AddressService;
 import com.upgrad.FoodOrderingApp.service.businness.CustomerService;
@@ -17,9 +16,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
@@ -54,5 +56,33 @@ public class AddressController {
                 .id(savedAddress.getUuid())
                 .status("ADDRESS SUCCESSFULLY REGISTERED");
         return new ResponseEntity<SaveAddressResponse>(addressResponse, HttpStatus.CREATED);
+    }
+
+    @CrossOrigin
+    @RequestMapping(method = GET, path = "/address/customer", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<AddressListResponse> getAllAddresses(@RequestHeader("authorization") final String authorization) throws AuthorizationFailedException{
+        BearerAuthDecoder bearerAuthDecoder = new BearerAuthDecoder(authorization);
+        final String accessToken = bearerAuthDecoder.getAccessToken();
+        CustomerEntity existingCustomer = customerService.getCustomer(accessToken);
+        List<AddressEntity> addresses = addressService.getAllAddress(existingCustomer);
+        List<AddressList> addressesList = new LinkedList<>();
+        addresses.forEach(address -> {
+            AddressListState addressListState = new AddressListState();
+            addressListState.setId(UUID.fromString(address.getState().getUuid()));
+            addressListState.setStateName(address.getState().getStateName());
+
+            AddressList addressList = new AddressList()
+                    .id(UUID.fromString(address.getUuid()))
+                    .flatBuildingName(address.getFlatBuilNo())
+                    .city(address.getCity())
+                    .locality(address.getLocality())
+                    .pincode(address.getPincode())
+                    .state(addressListState);
+            addressesList.add(addressList);
+        });
+
+        AddressListResponse addressListResponse = new AddressListResponse().addresses(addressesList);
+        return new ResponseEntity<AddressListResponse>(addressListResponse, HttpStatus.OK);
+
     }
 }
