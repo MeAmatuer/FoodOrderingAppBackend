@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class OrderService {
@@ -62,5 +63,20 @@ public class OrderService {
         if (loggedInCustomerAuth.getExpiresAt().isAfter(now) ||  loggedInCustomerAuth.getExpiresAt().isEqual(now)) {
             throw new AuthorizationFailedException("ATHR-003", "Your session is expired. Log in again to access this endpoint.");
         }
+    }
+
+    public CouponEntity getCouponByUUID(UUID couponId) throws CouponNotFoundException {
+
+        CouponEntity coupon = orderDao.getCouponByUUID(couponId);
+        if(coupon == null){
+            throw new CouponNotFoundException("CPF-002", "No coupon by this id");
+        }
+
+        return coupon;
+    }
+
+    public OrdersEntity createOrder(OrdersEntity order) {
+        OrdersEntity newOrder = orderDao.createNewOrder(order);
+        return newOrder;
     }
 }

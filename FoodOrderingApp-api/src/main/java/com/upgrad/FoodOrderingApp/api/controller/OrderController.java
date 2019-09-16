@@ -2,18 +2,18 @@ package com.upgrad.FoodOrderingApp.api.controller;
 
 import com.upgrad.FoodOrderingApp.api.model.*;
 import com.upgrad.FoodOrderingApp.api.provider.BearerAuthDecoder;
-import com.upgrad.FoodOrderingApp.service.businness.OrderService;
+import com.upgrad.FoodOrderingApp.service.businness.*;
 import com.upgrad.FoodOrderingApp.service.entity.CouponEntity;
 import com.upgrad.FoodOrderingApp.service.entity.OrderItemEntity;
 import com.upgrad.FoodOrderingApp.service.entity.OrdersEntity;
-import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
-import com.upgrad.FoodOrderingApp.service.exception.CouponNotFoundException;
+import com.upgrad.FoodOrderingApp.service.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.ZonedDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,6 +23,18 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private PaymentService paymentService;
+
+    @Autowired
+    private AddressService addressService;
+
+    @Autowired
+    private RestaurantService restaurantService;
+
+    @Autowired
+    private ItemService itemService;
 
     @CrossOrigin
     @RequestMapping(method = RequestMethod.GET, path = "order/coupon/{coupon_name}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -87,4 +99,38 @@ public class OrderController {
         return new ResponseEntity<List<OrderList>>(orderList, HttpStatus.OK);
     }
 
+    @CrossOrigin
+    @RequestMapping(method = RequestMethod.POST, path = "/order", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<SaveOrderResponse> saveCustomerOrder(final SaveOrderRequest orderRequest, String authorization) throws AuthorizationFailedException, PaymentMethodNotFoundException, RestaurantNotFoundException, ItemNotFoundException, CouponNotFoundException, AddressNotFoundException {
+        BearerAuthDecoder bearerAuthDecoder = new BearerAuthDecoder(authorization);
+        String accessToken = bearerAuthDecoder.getAccessToken();
+        final OrdersEntity order = getOrderObject(orderRequest);
+        final OrdersEntity createdOrder = orderService.createOrder(order);
+        SaveOrderResponse orderResponse = new SaveOrderResponse()
+                .id(createdOrder.getUuid().toString())
+                .status("ORDER SUCCESSFULLY PLACED");
+        return new ResponseEntity<SaveOrderResponse>(orderResponse, HttpStatus.CREATED);
+    }
+
+    private OrdersEntity getOrderObject(SaveOrderRequest orderRequest) throws CouponNotFoundException, PaymentMethodNotFoundException, AddressNotFoundException, RestaurantNotFoundException, ItemNotFoundException {
+        OrdersEntity ordersEntity = new OrdersEntity();
+        ordersEntity.setBill(orderRequest.getBill());
+        ordersEntity.setCoupon(orderService.getCouponByUUID(orderRequest.getCouponId()));
+        ordersEntity.setDiscount(orderRequest.getDiscount());
+        ordersEntity.setDate(ZonedDateTime.now());
+        ordersEntity.setPayment(paymentService.getPaymentById(orderRequest.getPaymentId()));
+        ordersEntity.setAddress(addressService.getAddressById(orderRequest.getAddressId()));
+        ordersEntity.setRestaurant(restaurantService.getRestaurantById(orderRequest.getRestaurantId()));
+        List<ItemQuantity> itemQuantities = orderRequest.getItemQuantities();
+        List<OrderItemEntity> orderItemEntities = new LinkedList<>();
+        for (ItemQuantity itemQuantity : itemQuantities) {
+            OrderItemEntity orderItemEntity = new OrderItemEntity();
+            orderItemEntity.setItemId(itemService.getItemById(itemQuantity.getItemId()));
+            orderItemEntity.setPrice(itemQuantity.getPrice());
+            orderItemEntity.setQuantity(itemQuantity.getQuantity());
+            orderItemEntities.add(orderItemEntity);
+        }
+        ordersEntity.setOrderItem(orderItemEntities);
+        return ordersEntity;
+    }
 }
