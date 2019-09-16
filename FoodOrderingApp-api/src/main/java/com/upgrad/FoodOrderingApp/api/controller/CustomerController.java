@@ -1,17 +1,19 @@
 package com.upgrad.FoodOrderingApp.api.controller;
 
+import com.upgrad.FoodOrderingApp.api.model.LoginResponse;
 import com.upgrad.FoodOrderingApp.api.model.SignupCustomerRequest;
 import com.upgrad.FoodOrderingApp.api.model.SignupCustomerResponse;
+import com.upgrad.FoodOrderingApp.api.provider.BasicAuthDecoder;
 import com.upgrad.FoodOrderingApp.service.businness.CustomerService;
+import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
+import com.upgrad.FoodOrderingApp.service.exception.AuthenticationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.SignUpRestrictedException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -44,6 +46,24 @@ public class CustomerController {
 
         return new ResponseEntity<SignupCustomerResponse>(signupCustomerResponse, HttpStatus.CREATED);
 
+    }
+
+    @CrossOrigin
+    @RequestMapping(method = POST, path = "/customer/login", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<LoginResponse> login(@RequestHeader("authorization") final String authorization) throws AuthenticationFailedException {
+        BasicAuthDecoder basicAuthDecoder = new BasicAuthDecoder(authorization);
+        CustomerAuthEntity authorizedCustomer = customerService.authenticate(basicAuthDecoder.getUsername(), basicAuthDecoder.getPassword());
+        CustomerEntity customer = authorizedCustomer.getCustomer();
+        LoginResponse loginResponse = new LoginResponse()
+                .id(customer.getUuid())
+                .contactNumber(customer.getContactNumber())
+                .emailAddress(customer.getEmail())
+                .firstName(customer.getFirstName())
+                .lastName(customer.getLastName())
+                .message("LOGGED IN SUCCESSFULLY");
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("access-token", authorizedCustomer.getAccessToken());
+        return new ResponseEntity<LoginResponse>(loginResponse, httpHeaders, HttpStatus.OK);
     }
 
     private boolean fieldsComplete(CustomerEntity customer) throws SignUpRestrictedException {
