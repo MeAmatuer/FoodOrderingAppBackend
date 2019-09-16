@@ -98,4 +98,22 @@ public class AddressController {
                 .status("ADDRESS DELETED SUCCESSFULLY");
         return new ResponseEntity<DeleteAddressResponse>(deleteAddressResponse, HttpStatus.OK);
     }
+
+    @RequestMapping(method = GET, path = "/states", produces = APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<StatesListResponse> getAllStates() {
+        List<StateEntity> states = addressService.getAllStates();
+        if (!states.isEmpty()) {
+            List<StatesList> statesList = new LinkedList<>();
+            states.forEach(state -> {
+                StatesList stateList = new StatesList();
+                stateList.setId(UUID.fromString(state.getUuid()));
+                stateList.setStateName(state.getStateName());
+
+                statesList.add(stateList);
+            });
+            StatesListResponse statesListResponse = new StatesListResponse().states(statesList);
+            return new ResponseEntity<StatesListResponse>(statesListResponse, HttpStatus.OK);
+        } else
+            return new ResponseEntity<StatesListResponse>(new StatesListResponse(),HttpStatus.OK);
+    }
 }

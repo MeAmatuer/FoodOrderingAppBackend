@@ -95,6 +95,11 @@ public class AddressService {
     }
 
 
+    public List<StateEntity> getAllStates() {
+        List<StateEntity> states = stateDao.getAllStates();
+        return states;
+    }
+
     private boolean addressFieldsEmpty(AddressEntity address) {
         if (address.getFlatBuilNo().isEmpty() ||
                 address.getLocality().isEmpty() ||
