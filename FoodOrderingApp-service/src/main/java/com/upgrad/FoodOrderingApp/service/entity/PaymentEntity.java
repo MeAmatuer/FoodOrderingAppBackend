@@ -25,7 +25,7 @@ public class PaymentEntity implements Serializable {
     @Column(name="uuid")
     @Size(max=200)
     @NotNull
-    private UUID uuid;
+    private String uuid;
 
     @Column(name="payment_name")
     @Size(max=255)
@@ -35,6 +35,14 @@ public class PaymentEntity implements Serializable {
     @OneToMany(mappedBy = "payment", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private List<OrderEntity> orders = new ArrayList<>();
 
+    public PaymentEntity() {}
+
+    public PaymentEntity(@NotNull @Size(max = 200) String uuid, @NotNull @Size(max = 255) String paymentName) {
+        this.uuid = uuid;
+        this.paymentName = paymentName;
+    }
+
+
     public Integer getId() {
         return id;
     }
@@ -43,11 +51,11 @@ public class PaymentEntity implements Serializable {
         this.id = id;
     }
 
-    public UUID getUuid() {
+    public String getUuid() {
         return uuid;
     }
 
-    public void setUuid(UUID uuid) {
+    public void setUuid(String uuid) {
         this.uuid = uuid;
     }
 
@@ -67,6 +75,4 @@ public class PaymentEntity implements Serializable {
         this.orders = orders;
     }
 
-    public PaymentEntity() {
-    }
 }

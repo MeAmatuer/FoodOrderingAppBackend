@@ -6,11 +6,13 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 
 @Entity
 @Table(name="customer")
+@NamedQueries({
+        @NamedQuery(name = "customerByUUID", query = "select c from CustomerEntity c where c.uuid = :uuid"),
+})
 public class CustomerEntity implements Serializable {
 
     @Id
@@ -22,7 +24,7 @@ public class CustomerEntity implements Serializable {
     @Column(name="uuid")
     @Size(max=200)
     @NotNull
-    private UUID uuid;
+    private String uuid;
 
     @Column(name = "firstname")
     @Size(max = 30)
@@ -59,6 +61,18 @@ public class CustomerEntity implements Serializable {
     @OneToMany(mappedBy = "customer", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
     private List<OrderEntity> orders = new ArrayList<>();
 
+    @OneToMany
+    @JoinTable(name = "customer_address", joinColumns = @JoinColumn(name = "customer_id"),
+            inverseJoinColumns = @JoinColumn(name = "address_id"))
+    private List<AddressEntity> addresses = new ArrayList<>();
+
+    public List<AddressEntity> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(List<AddressEntity> addresses) {
+        this.addresses = addresses;
+    }
 
     public Integer getId() {
         return id;
@@ -68,11 +82,11 @@ public class CustomerEntity implements Serializable {
         this.id = id;
     }
 
-    public UUID getUuid() {
+    public String getUuid() {
         return uuid;
     }
 
-    public void setUuid(UUID uuid) {
+    public void setUuid(String uuid) {
         this.uuid = uuid;
     }
 

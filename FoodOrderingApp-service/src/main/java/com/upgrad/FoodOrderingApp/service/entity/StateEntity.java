@@ -4,9 +4,6 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name="state")
@@ -22,15 +19,22 @@ public class StateEntity implements Serializable {
     @Column(name="uuid")
     @Size(max=200)
     @NotNull
-    private UUID uuid;
+    private String uuid;
 
     @Column(name="state_name")
     @Size(max=30)
     @NotNull
     private String stateName;
 
-    @OneToMany(mappedBy = "stateId", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
+   /* @OneToMany(mappedBy = "stateId", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private List<AddressEntity> addresses = new ArrayList<>();
+*/
+    public StateEntity() {}
+
+    public StateEntity(String uuid, String name) {
+        this.uuid = uuid;
+        this.stateName = name;
+    }
 
     public Integer getId() {
         return id;
@@ -40,11 +44,11 @@ public class StateEntity implements Serializable {
         this.id = id;
     }
 
-    public UUID getUuid() {
+    public String getUuid() {
         return uuid;
     }
 
-    public void setUuid(UUID uuid) {
+    public void setUuid(String uuid) {
         this.uuid = uuid;
     }
 
@@ -56,14 +60,12 @@ public class StateEntity implements Serializable {
         this.stateName = stateName;
     }
 
-    public List<AddressEntity> getAddresses() {
+    /*public List<AddressEntity> getAddresses() {
         return addresses;
     }
 
     public void setAddresses(List<AddressEntity> addresses) {
         this.addresses = addresses;
-    }
+    }*/
 
-    public StateEntity() {
     }
-}

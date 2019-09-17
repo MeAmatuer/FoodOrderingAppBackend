@@ -15,7 +15,7 @@ public class PaymentDao {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public PaymentEntity getPayment(UUID paymentId) {
+    public PaymentEntity getPayment(String paymentId) {
         try {
             PaymentEntity paymentEntity = entityManager.createNamedQuery("paymentsByPaymentId", PaymentEntity.class)
                     .setParameter("paymentId", paymentId)

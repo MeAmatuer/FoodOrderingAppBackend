@@ -3,6 +3,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,15 +38,15 @@ public class RestaurantEntity implements Serializable {
 
     @Column(name="customer_rating")
     @NotNull
-    private Float customerRating;
+    private BigDecimal customerRating;
 
     @Column(name="average_price_for_two")
     @NotNull
-    private Integer averagePriceForTwo;
+    private Integer AvgPrice;
 
     @Column(name="number_of_customers_rated")
     @NotNull
-    private Integer numberOfCustomersRated;
+    private Integer NumberCustomersRated;
 
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="address_id")
@@ -91,28 +93,28 @@ public class RestaurantEntity implements Serializable {
         this.photoUrl = photoUrl;
     }
 
-    public Float getCustomerRating() {
-        return customerRating;
+    public Double getCustomerRating() {
+        return customerRating.doubleValue();
     }
 
-    public void setCustomerRating(Float customerRating) {
-        this.customerRating = customerRating;
+    public void setCustomerRating(Double customerRating) {
+        this.customerRating = new BigDecimal(customerRating).setScale(2, RoundingMode.HALF_UP);;
     }
 
-    public Integer getAveragePriceForTwo() {
-        return averagePriceForTwo;
+    public Integer getAvgPrice() {
+        return AvgPrice;
     }
 
-    public void setAveragePriceForTwo(Integer averagePriceForTwo) {
-        this.averagePriceForTwo = averagePriceForTwo;
+    public void setAvgPrice(Integer avgPrice) {
+        AvgPrice = avgPrice;
     }
 
-    public Integer getNumberOfCustomersRated() {
-        return numberOfCustomersRated;
+    public Integer getNumberCustomersRated() {
+        return NumberCustomersRated;
     }
 
-    public void setNumberOfCustomersRated(Integer numberOfCustomersRated) {
-        this.numberOfCustomersRated = numberOfCustomersRated;
+    public void setNumberCustomersRated(Integer numberCustomersRated) {
+        NumberCustomersRated = numberCustomersRated;
     }
 
     public AddressEntity getAddress() {

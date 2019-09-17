@@ -24,7 +24,7 @@ public class CouponEntity implements Serializable {
     @Column(name="uuid")
     @Size(max=200)
     @NotNull
-    private UUID uuid;
+    private String uuid;
 
     @Column(name="coupon_name")
     @Size(max=255)
@@ -38,6 +38,15 @@ public class CouponEntity implements Serializable {
     @OneToMany(mappedBy = "coupon", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private List<OrderEntity> orders = new ArrayList<>();
 
+    public CouponEntity() {
+    }
+
+    public CouponEntity(String uuid, String couponName, Integer percent) {
+        this.uuid = uuid;
+        this.couponName = couponName;
+        this.percent = percent;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -46,11 +55,11 @@ public class CouponEntity implements Serializable {
         this.id = id;
     }
 
-    public UUID getUuid() {
+    public String getUuid() {
         return uuid;
     }
 
-    public void setUuid(UUID uuid) {
+    public void setUuid(String uuid) {
         this.uuid = uuid;
     }
 
@@ -78,6 +87,5 @@ public class CouponEntity implements Serializable {
         this.orders = orders;
     }
 
-    public CouponEntity() {
-    }
+
 }

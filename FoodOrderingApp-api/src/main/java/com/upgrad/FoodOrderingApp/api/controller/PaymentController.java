@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/")
@@ -26,11 +27,11 @@ public class PaymentController {
     @CrossOrigin
     @RequestMapping(method = RequestMethod.GET, path = "/payment", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<PaymentListResponse> getPaymentMethods() {
-        List<PaymentEntity> paymentList = paymentService.getPaymentMethods();
+        List<PaymentEntity> paymentList = paymentService.getAllPaymentMethods();
         PaymentListResponse paymentListResponse;
         List<PaymentResponse> paymentMethods = new LinkedList<PaymentResponse>();
         for(PaymentEntity paymentEntity: paymentList){
-            PaymentResponse paymentResponse = new PaymentResponse().id(paymentEntity.getUuid()).paymentName(paymentEntity.getPaymentName());
+            PaymentResponse paymentResponse = new PaymentResponse().id(UUID.fromString(paymentEntity.getUuid())).paymentName(paymentEntity.getPaymentName());
             paymentMethods.add(paymentResponse);
         }
         paymentListResponse = new PaymentListResponse().paymentMethods(paymentMethods);

@@ -23,7 +23,7 @@ public class AddressEntity implements Serializable {
     @Column(name="uuid")
     @Size(max=200)
     @NotNull
-    private UUID uuid;
+    private String uuid;
 
     @Column(name="flat_buil_number")
     @Size(max=255)
@@ -47,14 +47,16 @@ public class AddressEntity implements Serializable {
 
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="state_id")
-    private StateEntity stateId;
+    private StateEntity State;
 
     @NotNull
     @Column(name="active")
     private Integer active;
 
-    @OneToMany(mappedBy = "address", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
-    private List<CustomerAddressEntity> customerAddresses = new ArrayList<>();
+    @ManyToOne
+    @JoinTable(name = "customer_address", joinColumns = @JoinColumn(name = "address_id"),
+            inverseJoinColumns = @JoinColumn(name = "customer_id"))
+    private CustomerEntity customer;
 
     @OneToMany(mappedBy = "address", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private List<RestaurantEntity> restaurant = new ArrayList<>();
@@ -70,6 +72,19 @@ public class AddressEntity implements Serializable {
         this.orders = orders;
     }
 
+    public AddressEntity() {}
+
+    public AddressEntity(String uuid, String flatBuilNo, String locality, String city, String pincode, StateEntity stateEntity) {
+        this.uuid = uuid;
+        this.flatBuilNumber = flatBuilNo;
+        this.locality = locality;
+        this.city = city;
+        this.pincode = pincode;
+        this.State = stateEntity;
+        this.active = 1;
+    }
+
+
     public Integer getId() {
         return id;
     }
@@ -78,11 +93,11 @@ public class AddressEntity implements Serializable {
         this.id = id;
     }
 
-    public UUID getUuid() {
+    public String getUuid() {
         return uuid;
     }
 
-    public void setUuid(UUID uuid) {
+    public void setUuid(String uuid) {
         this.uuid = uuid;
     }
 
@@ -118,12 +133,12 @@ public class AddressEntity implements Serializable {
         this.pincode = pincode;
     }
 
-    public StateEntity getStateId() {
-        return stateId;
+    public StateEntity getState() {
+        return State;
     }
 
-    public void setStateId(StateEntity stateId) {
-        this.stateId = stateId;
+    public void setState(StateEntity state) {
+        State = state;
     }
 
     public Integer getActive() {
@@ -134,14 +149,6 @@ public class AddressEntity implements Serializable {
         this.active = active;
     }
 
-    public List<CustomerAddressEntity> getCustomerAddresses() {
-        return customerAddresses;
-    }
-
-    public void setCustomerAddresses(List<CustomerAddressEntity> customerAddresses) {
-        this.customerAddresses = customerAddresses;
-    }
-
     public List<RestaurantEntity> getRestaurant() {
         return restaurant;
     }
@@ -150,6 +157,11 @@ public class AddressEntity implements Serializable {
         this.restaurant = restaurant;
     }
 
-    public AddressEntity() {
+    public CustomerEntity getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(CustomerEntity customer) {
+        this.customer = customer;
     }
 }

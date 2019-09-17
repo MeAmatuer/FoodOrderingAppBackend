@@ -15,7 +15,7 @@ public class RestaurantDao {
     private EntityManager entityManager;
 
 
-    public RestaurantEntity getRestaurantById(UUID restaurantId) {
+    public RestaurantEntity getRestaurantById(String restaurantId) {
         try {
             RestaurantEntity restaurantEntity = entityManager.createNamedQuery("restaurantById", RestaurantEntity.class)
                     .setParameter("restaurantId", restaurantId)

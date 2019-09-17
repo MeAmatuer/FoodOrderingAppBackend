@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class PaymentService {
@@ -15,7 +14,7 @@ public class PaymentService {
     @Autowired
     private PaymentDao paymentDao;
 
-    public PaymentEntity getPaymentByUUID(UUID paymentId) throws PaymentMethodNotFoundException {
+    public PaymentEntity getPaymentByUUID(String paymentId) throws PaymentMethodNotFoundException {
         PaymentEntity paymentEntity = paymentDao.getPayment(paymentId);
         if(paymentEntity == null){
             throw new PaymentMethodNotFoundException("PNF-002", "No payment method found by this id");
@@ -24,7 +23,7 @@ public class PaymentService {
         }
     }
 
-    public List<PaymentEntity> getPaymentMethods() {
+    public List<PaymentEntity> getAllPaymentMethods() {
         List<PaymentEntity> paymentEntities = paymentDao.getPaymentMethods();
         return paymentEntities;
 

@@ -6,6 +6,9 @@ import java.io.Serializable;
 
 @Entity
 @Table(name="order_item")
+@NamedQueries({
+        @NamedQuery(name = "itemsByOrder", query = "select q from OrderItemEntity q where q.orderId = :orderEntity"),
+})
 public class OrderItemEntity implements Serializable {
 
     @Id

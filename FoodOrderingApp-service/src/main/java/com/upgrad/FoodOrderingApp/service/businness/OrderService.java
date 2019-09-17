@@ -1,14 +1,13 @@
 package com.upgrad.FoodOrderingApp.service.businness;
 
+import com.upgrad.FoodOrderingApp.service.dao.CouponDao;
 import com.upgrad.FoodOrderingApp.service.dao.CustomerAuthDao;
+import com.upgrad.FoodOrderingApp.service.dao.CustomerDao;
 import com.upgrad.FoodOrderingApp.service.dao.OrderDao;
 import com.upgrad.FoodOrderingApp.service.entity.CouponEntity;
-import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
 import com.upgrad.FoodOrderingApp.service.entity.OrderEntity;
-
-import com.upgrad.FoodOrderingApp.service.entity.*;
-
+import com.upgrad.FoodOrderingApp.service.entity.OrderItemEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.CouponNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class OrderService {
@@ -31,48 +27,38 @@ public class OrderService {
     @Autowired
     private OrderDao orderDao;
 
-    public CouponEntity getCoupon(String couponName, String accessToken) throws AuthorizationFailedException, CouponNotFoundException {
+    @Autowired
+    private CustomerDao customerDao;
 
-        checkAccessToken(accessToken);
-        if(couponName.isEmpty()){
+    @Autowired
+    private CouponDao couponDao;
+
+    public CouponEntity getCouponByCouponName(String couponName) throws CouponNotFoundException {
+
+        if (couponName.equals("")) {
             throw new CouponNotFoundException("CPF-002", "Coupon name field should not be empty");
         }
-        CouponEntity couponEntity = orderDao.getCouponByName(couponName);
-        if (couponEntity != null) {
-            return couponEntity;
-        }else {
+
+        CouponEntity couponEntity = couponDao.getCouponByCouponName(couponName);
+
+        if (couponEntity == null) {
             throw new CouponNotFoundException("CPF-001", "No coupon by this name");
         }
+
+        return couponEntity;
     }
 
 
     public List<OrderEntity> getPastOrders(String accessToken) throws AuthorizationFailedException {
-        checkAccessToken(accessToken);
+        //checkAccessToken(accessToken);
         CustomerEntity customerEntity = customerAuthDao.findByAccessToken(accessToken).getCustomer();
         List<OrderEntity> pastOrders = orderDao.getPastOrders(customerEntity);
         return pastOrders;
     }
 
-    private void checkAccessToken(String accessToken) throws AuthorizationFailedException{
-        final ZonedDateTime now;
-        now = ZonedDateTime.now(ZoneId.systemDefault());
+    public CouponEntity getCouponByCouponId(String uuid) throws CouponNotFoundException {
 
-
-        CustomerAuthEntity loggedInCustomerAuth = customerAuthDao.findByAccessToken(accessToken);
-        if (loggedInCustomerAuth == null) {
-            throw new AuthorizationFailedException("ATHR-001", "Customer is not Logged in.");
-        }
-        if (loggedInCustomerAuth.getLogoutAt() != null) {
-            throw new AuthorizationFailedException("ATHR-002", "Customer is logged out. Log in again to access this endpoint.");
-        }
-        if (loggedInCustomerAuth.getExpiresAt().isAfter(now) ||  loggedInCustomerAuth.getExpiresAt().isEqual(now)) {
-            throw new AuthorizationFailedException("ATHR-003", "Your session is expired. Log in again to access this endpoint.");
-        }
-    }
-
-    public CouponEntity getCouponByCouponId(UUID couponId) throws CouponNotFoundException {
-
-        CouponEntity coupon = orderDao.getCouponByUUID(couponId);
+        CouponEntity coupon = couponDao.getCouponByUUID(uuid);
         if(coupon == null){
             throw new CouponNotFoundException("CPF-002", "No coupon by this id");
         }
@@ -89,5 +75,9 @@ public class OrderService {
     public OrderItemEntity saveOrderItem(OrderItemEntity orderItemEntity) {
         OrderItemEntity newOrderItemEntity = orderDao.createNewOrderItem(orderItemEntity);
         return newOrderItemEntity;
+    }
+
+    public List<OrderEntity> getOrdersByCustomers(String customerUUID) {
+        return orderDao.getOrdersByCustomers(customerDao.getCustomerByUUID(customerUUID));
     }
 }
