@@ -17,7 +17,11 @@ public class CouponDao {
     private EntityManager entityManager;
 
 
-    //To get Coupon by Coupon Name from the db
+    /**
+     * Method to get the Coupon from the database given coupon name
+      * @param couponName
+     * @return
+     */
     public CouponEntity getCouponByCouponName(String couponName){
         try{
             CouponEntity couponEntity = entityManager.createNamedQuery("couponByCouponName",CouponEntity.class).setParameter("coupon_name",couponName).getSingleResult();
@@ -27,6 +31,11 @@ public class CouponDao {
         }
     }
 
+    /**
+     * Get the Coupon from DB given Coupon UUID
+     * @param couponId
+     * @return
+     */
     public CouponEntity getCouponByUUID(String couponId) {
         final CouponEntity couponEntity;
         try {

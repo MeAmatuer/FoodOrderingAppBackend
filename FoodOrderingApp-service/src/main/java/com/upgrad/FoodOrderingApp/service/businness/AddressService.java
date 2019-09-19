@@ -19,7 +19,14 @@ public class AddressService {
     @Autowired
     private CustomerAddressDao customerAddressDao;
 
-
+    /**
+     * Service Class method that is called to get the Address entity when the Address UUID is passed
+     * @param addressId
+     * @param customerEntity
+     * @return
+     * @throws AddressNotFoundException
+     * @throws AuthorizationFailedException
+     */
     public AddressEntity getAddressByUUID(String addressId, CustomerEntity customerEntity) throws AddressNotFoundException, AuthorizationFailedException{
         if (addressId == null) {
             throw new AddressNotFoundException("ANF-005","Address id can not be empty");

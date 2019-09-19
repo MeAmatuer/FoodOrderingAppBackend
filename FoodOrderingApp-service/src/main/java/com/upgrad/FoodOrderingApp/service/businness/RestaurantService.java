@@ -12,6 +12,12 @@ public class RestaurantService {
     @Autowired
     private RestaurantDao restaurantDao;
 
+    /**
+     * Method called to get the Restaurant entity given the restaurant id
+     * @param restaurantId
+     * @return
+     * @throws RestaurantNotFoundException
+     */
     public RestaurantEntity restaurantByUUID(String restaurantId) throws RestaurantNotFoundException {
         RestaurantEntity restaurantEntity = restaurantDao.getRestaurantById(restaurantId);
         if(restaurantEntity == null){

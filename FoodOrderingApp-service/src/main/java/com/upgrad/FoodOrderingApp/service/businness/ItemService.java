@@ -20,7 +20,12 @@ public class ItemService {
     @Autowired
     private OrderItemDao orderItemDao;
 
-
+    /**
+     * Method called to get the ItemEntity Instance by passing the UUID
+     * @param itemId
+     * @return
+     * @throws ItemNotFoundException
+     */
     public ItemEntity getItemByUUID(String itemId) throws ItemNotFoundException {
         ItemEntity itemEntity = itemDao.getItemById(itemId);
         if(itemEntity == null){

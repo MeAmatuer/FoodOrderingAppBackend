@@ -40,6 +40,14 @@ public class OrderController {
     @Autowired
     private CustomerService customerService;
 
+    /**
+     * Method that implements the endpoint to get coupon name
+     * @param couponName
+     * @param authorization
+     * @return
+     * @throws AuthorizationFailedException
+     * @throws CouponNotFoundException
+     */
     @CrossOrigin
     @RequestMapping(method = RequestMethod.GET, path = "order/coupon/{coupon_name}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<CouponDetailsResponse> getCouponByName(
@@ -59,6 +67,12 @@ public class OrderController {
         return new ResponseEntity<CouponDetailsResponse>(couponDetails, HttpStatus.OK);
     }
 
+    /**
+     * Method to implement the endpoint to get past orders of customer
+     * @param authorization
+     * @return
+     * @throws AuthorizationFailedException
+     */
     @CrossOrigin
     @RequestMapping(method = RequestMethod.GET, path = "/order", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<CustomerOrderResponse> getCustomerOrders(
@@ -136,6 +150,18 @@ public class OrderController {
         return new ResponseEntity<CustomerOrderResponse>(customerOrderResponse, HttpStatus.OK);
     }
 
+    /**
+     * Method to implement the endpoint to save customer orders
+     * @param saveOrderRequest
+     * @param authorization
+     * @return
+     * @throws AuthorizationFailedException
+     * @throws PaymentMethodNotFoundException
+     * @throws RestaurantNotFoundException
+     * @throws ItemNotFoundException
+     * @throws CouponNotFoundException
+     * @throws AddressNotFoundException
+     */
     @CrossOrigin
     @RequestMapping(method = RequestMethod.POST, path = "/order", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<SaveOrderResponse> saveOrder(

@@ -13,7 +13,11 @@ public class AddressDao {
     @PersistenceContext
     private EntityManager entityManager;
 
-
+    /**
+     * Method that fetches the Address from the Database
+     * @param addressId
+     * @return
+     */
     public AddressEntity getAddressById(String addressId) {
         try {
             AddressEntity addressEntity = entityManager.createNamedQuery("addressById", AddressEntity.class)

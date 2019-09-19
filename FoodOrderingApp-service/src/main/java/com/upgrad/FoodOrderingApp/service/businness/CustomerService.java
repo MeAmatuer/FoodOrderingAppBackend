@@ -16,6 +16,12 @@ public class CustomerService {
     @Autowired
     private CustomerDao customerDao;
 
+    /**
+     * Method that implements the business logic to verify that the access token passed to it is valid or not
+     * @param accessToken
+     * @return
+     * @throws AuthorizationFailedException
+     */
     public CustomerEntity getCustomer(String accessToken) throws AuthorizationFailedException {
 
         CustomerAuthEntity customerAuthEntity = customerDao.getCustomerAuthByAccessToken(accessToken);
