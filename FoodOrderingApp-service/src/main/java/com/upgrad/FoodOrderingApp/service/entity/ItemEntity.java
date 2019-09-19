@@ -28,7 +28,7 @@ public class ItemEntity implements Serializable {
     @NotNull
     private String ItemName;
 
-    @NotNull
+   @NotNull
     @Column(name="price")
     private Integer price;
 

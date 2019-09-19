@@ -9,7 +9,8 @@ import java.util.List;
 @Entity
 @Table(name="category")
 @NamedQueries({
-        @NamedQuery(name="getCategoryByUuid", query = "select q from CategoryEntity q where q.uuid = :uuid")
+        @NamedQuery(name="getCategoryByUuid", query = "select q from CategoryEntity q where q.uuid = :uuid"),
+        @NamedQuery(name = "allCategories", query = "select q from CategoryEntity q"),
 })
 public class CategoryEntity implements Serializable {
 
@@ -29,16 +30,10 @@ public class CategoryEntity implements Serializable {
     @NotNull
     private String CategoryName;
 
-    /*@OneToMany(mappedBy = "category_id", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-    private List<RestaurantCategoryEntity> restaurantCategory = new ArrayList<>();*/
-
     @ManyToMany
     @JoinTable(name = "restaurant_category", joinColumns = @JoinColumn(name = "category_id"),
             inverseJoinColumns = @JoinColumn(name = "restaurant_id"))
     private List<RestaurantEntity> restaurants = new ArrayList<>();
-
-   /* @OneToMany(mappedBy = "category_id", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-    private List<CategoryItemEntity> categoryItem = new ArrayList<>();*/
 
     @ManyToMany
     @JoinTable(name = "category_item", joinColumns = @JoinColumn(name = "category_id"),
@@ -85,20 +80,4 @@ public class CategoryEntity implements Serializable {
         this.items = items;
     }
 
-
-/*public List<RestaurantCategoryEntity> getRestaurantCategory() {
-        return restaurantCategory;
-    }
-
-    public void setRestaurantCategory(List<RestaurantCategoryEntity> restaurantCategory) {
-        this.restaurantCategory = restaurantCategory;
-    }*/
-
-    /*public List<CategoryItemEntity> getCategoryItem() {
-        return categoryItem;
-    }
-
-    public void setCategoryItem(List<CategoryItemEntity> categoryItem) {
-        this.categoryItem = categoryItem;
-    }*/
 }
