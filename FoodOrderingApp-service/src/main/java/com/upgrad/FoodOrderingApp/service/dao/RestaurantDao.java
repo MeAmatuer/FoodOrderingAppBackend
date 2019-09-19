@@ -25,8 +25,8 @@ public class RestaurantDao {
     //This method queries DB to get the single restaurant from DB
     //Restaurant details are returned as per the input parameter restaurant uuid
 
-    public RestaurantEntity getRestaurantByUuid(String uuid){
-        try {
+    public RestaurantEntity restaurantByUUID(String uuid){
+           try {
             return entityManager.createNamedQuery("restaurantByUUID", RestaurantEntity.class).setParameter("uuid", uuid).getSingleResult();
         } catch (NoResultException nre){
             return null;
@@ -37,4 +37,5 @@ public class RestaurantDao {
          entityManager.merge(restaurantEntity);
          return  restaurantEntity;
     }
+
 }

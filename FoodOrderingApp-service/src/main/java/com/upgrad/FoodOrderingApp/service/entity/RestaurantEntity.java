@@ -12,8 +12,8 @@ import java.util.List;
 @Table(name="restaurant")
 @NamedQueries({
 
-        @NamedQuery(name = "getAllRestaurantsByRating", query = "select q from RestaurantEntity q order by q.CustomerRating desc"),
-        @NamedQuery(name = "restaurantByUUID", query = "select q from RestaurantEntity q where q.uuid = :uuid"),
+      @NamedQuery(name = "getAllRestaurantsByRating", query = "select q from RestaurantEntity q order by q.CustomerRating desc"),
+      @NamedQuery(name = "restaurantByUUID", query = "select q from RestaurantEntity q where q.uuid = :uuid"),
 })
 
 public class RestaurantEntity implements Serializable {
@@ -33,6 +33,7 @@ public class RestaurantEntity implements Serializable {
     @Size(max=30)
     @NotNull
     private String RestaurantName;
+
 
     @Column(name="photo_url")
     @Size(max=255)
@@ -131,6 +132,7 @@ public class RestaurantEntity implements Serializable {
     public void setNumberCustomersRated(Integer numberCustomersRated) {
         NumberCustomersRated = numberCustomersRated;
     }
+
 
     public AddressEntity getAddress() {
         return address;

@@ -45,6 +45,7 @@ public class AddressEntity implements Serializable {
     @JoinColumn(name="state_id")
     private StateEntity State;
 
+
     @NotNull
     @Column(name="active")
     private Integer active;

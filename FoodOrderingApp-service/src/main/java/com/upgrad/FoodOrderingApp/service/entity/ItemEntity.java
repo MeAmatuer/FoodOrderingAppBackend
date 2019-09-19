@@ -10,6 +10,9 @@ import java.util.List;
 
 @Entity
 @Table(name="item")
+@NamedQueries({
+        @NamedQuery(name = "itemByUUID", query = "select q from ItemEntity q where q.uuid = :uuid")
+})
 public class ItemEntity implements Serializable {
 
     @Id
@@ -28,7 +31,7 @@ public class ItemEntity implements Serializable {
     @NotNull
     private String ItemName;
 
-   @NotNull
+    @NotNull
     @Column(name="price")
     private Integer price;
 
@@ -43,9 +46,6 @@ public class ItemEntity implements Serializable {
     @OneToMany(mappedBy = "item_id", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private List<CategoryItemEntity> categoryItem = new ArrayList<>();
 
-    /*@OneToMany(mappedBy = "item_id", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
-    private List<RestaurantItemEntity> restaurantItem = new ArrayList<>();
-*/
     @ManyToMany
     @JoinTable(name = "restaurant_item", joinColumns = @JoinColumn(name = "item_id"),
             inverseJoinColumns = @JoinColumn(name = "restaurant_id"))
@@ -115,11 +115,4 @@ public class ItemEntity implements Serializable {
         this.restaurants = restaurants;
     }
 
-    /*public List<RestaurantItemEntity> getRestaurantItem() {
-        return restaurantItem;
-    }
-
-    public void setRestaurantItem(List<RestaurantItemEntity> restaurantItem) {
-        this.restaurantItem = restaurantItem;
-    }*/
 }

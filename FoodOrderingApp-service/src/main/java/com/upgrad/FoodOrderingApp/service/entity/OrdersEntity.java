@@ -9,6 +9,9 @@ import java.util.List;
 
 @Entity
 @Table(name="orders")
+@NamedQueries({
+        @NamedQuery(name = "ordersByRestaurant", query = "select q from OrdersEntity q where q.restaurant = :restaurant"),
+})
 public class OrdersEntity implements Serializable {
 
     @Id
@@ -54,18 +57,12 @@ public class OrdersEntity implements Serializable {
     @JoinColumn(name="restaurant_id")
     private RestaurantEntity restaurant;
 
-    @OneToMany(mappedBy = "order_id", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
-    private List<OrderItemEntity> orderItem = new ArrayList<>();
 
-    public List<OrderItemEntity> getOrderItem() {
-        return orderItem;
-    }
+    public OrdersEntity() {}
 
-    public void setOrderItem(List<OrderItemEntity> orderItem) {
-        this.orderItem = orderItem;
-    }
 
-    public Integer getId() {
+
+     public Integer getId() {
         return id;
     }
 

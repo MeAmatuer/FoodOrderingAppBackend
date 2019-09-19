@@ -6,6 +6,9 @@ import java.io.Serializable;
 
 @Entity
 @Table(name="order_item")
+@NamedQueries({
+        @NamedQuery(name = "itemsByOrder", query = "select q from OrderItemEntity q where q.order = :ordersEntity"),
+})
 public class OrderItemEntity implements Serializable {
 
     @Id
@@ -16,7 +19,7 @@ public class OrderItemEntity implements Serializable {
 
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="order_id")
-    private OrdersEntity order_id;
+    private OrdersEntity order;
 
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="item_id")
@@ -38,12 +41,13 @@ public class OrderItemEntity implements Serializable {
         this.id = id;
     }
 
-    public OrdersEntity getOrder_id() {
-        return order_id;
+    public OrdersEntity getOrder() {
+        return order;
     }
 
-    public void setOrder_id(OrdersEntity order_id) {
-        this.order_id = order_id;
+    public void setOrder(OrdersEntity order) {
+        this.order = order;
+
     }
 
     public ItemEntity getItem_id() {
