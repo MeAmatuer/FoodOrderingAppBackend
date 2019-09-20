@@ -55,6 +55,7 @@ public class AddressService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public CustomerAddressEntity saveCustomerAddress(CustomerEntity customer, AddressEntity address) {
+        // saves the provided address of the customer
         CustomerAddressEntity customerAddressEntity = new CustomerAddressEntity();
         customerAddressEntity.setCustomer(customer);
         customerAddressEntity.setAddress(address);
@@ -63,6 +64,7 @@ public class AddressService {
     }
 
     public List<AddressEntity> getAllAddress(CustomerEntity customer) {
+        // Gets list of addresses based on customer entity
         List<AddressEntity> addressEntities = new LinkedList<>();
         List<CustomerAddressEntity> customerAddressEntities = addressDao.getAddressesByCustomer(customer);
         if (customerAddressEntities != null) {
@@ -73,6 +75,7 @@ public class AddressService {
     }
 
     public AddressEntity getAddressByUUID(final String addressId, final CustomerEntity customer) throws AddressNotFoundException, AuthorizationFailedException {
+
         if (addressId == null) {
             throw new AddressNotFoundException("ANF-005","Address id can not be empty");
         }
@@ -81,6 +84,7 @@ public class AddressService {
             throw new AddressNotFoundException("ANF-003", "No address by this id");
         }
 
+        // Queries for Customer address based on address Entity
         CustomerAddressEntity customerAddressEntity = customerAddressDao.getCustomerAddressByAddress(address);
         if (!customerAddressEntity.getCustomer().getUuid().equals(customer.getUuid())) {
             throw new AuthorizationFailedException("ATHR-004","You are not authorized to view/update/delete any one else's address");
@@ -90,16 +94,19 @@ public class AddressService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public AddressEntity deleteAddress(final AddressEntity addressEntity) {
+        // Deletes the corresponding address from the database
         AddressEntity deletedAddress = addressDao.deleteAddress(addressEntity);
         return deletedAddress;
     }
 
 
     public List<StateEntity> getAllStates() {
+        // fetches all the states from the DB
         List<StateEntity> states = stateDao.getAllStates();
         return states;
     }
 
+    // Checks if any of the required address fields are empty and returns a boolean response
     private boolean addressFieldsEmpty(AddressEntity address) {
         if (address.getFlatBuilNo().isEmpty() ||
                 address.getLocality().isEmpty() ||
@@ -109,6 +116,7 @@ public class AddressService {
         return false;
     }
 
+    // Verifies if the provided PinCode is valid
     private boolean validPincode(String pincode) throws SaveAddressException {
         Pattern p = Pattern.compile("\\d{6}\\b");
         Matcher m = p.matcher(pincode);
