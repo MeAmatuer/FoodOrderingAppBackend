@@ -1,4 +1,3 @@
-/*
 package com.upgrad.FoodOrderingApp.api.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -465,4 +464,4 @@ public class RestaurantControllerTest {
         restaurantEntity.setRestaurantName("Famous Restaurant");
         return restaurantEntity;
     }
-}*/
+}
