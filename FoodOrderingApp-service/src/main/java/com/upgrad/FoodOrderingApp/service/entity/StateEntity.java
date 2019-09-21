@@ -8,9 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@NamedQueries({
+        @NamedQuery(name = "stateByUUID", query = "SELECT s from StateEntity s WHERE  s.uuid = :uuid"),
+        @NamedQuery(name = "getAllStates", query = "SELECT s FROM StateEntity s")
+})
+
 @Table(name="state")
 public class StateEntity implements Serializable {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,22 +31,9 @@ public class StateEntity implements Serializable {
     @Size(max=30)
     @NotNull
     private String stateName;
-
-    public StateEntity() {}
-
-    public StateEntity(String uuid, String name) {
-        this.uuid = uuid;
-        this.stateName = name;
-    }
-
-    /*@OneToMany(mappedBy = "state_id", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
-    private List<AddressEntity> Addresses = new ArrayList<>();
-*/
-
-
+       
     @OneToMany(mappedBy = "State", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private List<AddressEntity> Addresses = new ArrayList<>();
-
 
     public Integer getId() {
         return id;
@@ -68,20 +59,19 @@ public class StateEntity implements Serializable {
         this.stateName = stateName;
     }
 
-   /* public List<AddressEntity> getAddresses() {
-        return Addresses;
-    }
-    public void setAddresses(List<AddressEntity> addresses) {
-        Addresses = addresses;
-    }*/
-
-
-
+   
     public List<AddressEntity> getAddresses() {
         return Addresses;
     }
 
     public void setAddresses(List<AddressEntity> addresses) {
         Addresses = addresses;
+
+    public StateEntity() {
+    }
+
+    public StateEntity(@Size(max = 200) @NotNull String uuid, @Size(max = 30) @NotNull String stateName) {
+        this.uuid = uuid;
+        this.stateName = stateName;
     }
 }

@@ -12,6 +12,7 @@ import java.util.List;
         @NamedQuery(name="getCategoryByUuid", query = "select q from CategoryEntity q where q.uuid = :uuid"),
         @NamedQuery(name = "allCategories", query = "select q from CategoryEntity q"),
 })
+
 public class CategoryEntity implements Serializable {
 
     @Id
@@ -47,6 +48,14 @@ public class CategoryEntity implements Serializable {
     public void setRestaurants(List<RestaurantEntity> restaurants) {
         this.restaurants = restaurants;
     }
+  
+
+    @OneToMany(mappedBy = "categoryId", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+    private List<RestaurantCategoryEntity> restaurantCategory = new ArrayList<>();
+
+    @OneToMany(mappedBy = "categoryId", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+    private List<CategoryItemEntity> categoryItem = new ArrayList<>();
+
 
     public Integer getId() {
         return id;
@@ -67,9 +76,9 @@ public class CategoryEntity implements Serializable {
     public String getCategoryName() {
         return CategoryName;
     }
-
+  
     public void setCategoryName(String categoryName) {
-        CategoryName = categoryName;
+        this.categoryName = categoryName;
     }
 
     public List<ItemEntity> getItems() {
@@ -79,5 +88,24 @@ public class CategoryEntity implements Serializable {
     public void setItems(List<ItemEntity> items) {
         this.items = items;
     }
+ 
 
+    public List<RestaurantCategoryEntity> getRestaurantCategory() {
+        return restaurantCategory;
+    }
+
+    public void setRestaurantCategory(List<RestaurantCategoryEntity> restaurantCategory) {
+        this.restaurantCategory = restaurantCategory;
+    }
+
+    public List<CategoryItemEntity> getCategoryItem() {
+        return categoryItem;
+    }
+
+    public void setCategoryItem(List<CategoryItemEntity> categoryItem) {
+        this.categoryItem = categoryItem;
+    }
+
+    public CategoryEntity() {
+    }
 }

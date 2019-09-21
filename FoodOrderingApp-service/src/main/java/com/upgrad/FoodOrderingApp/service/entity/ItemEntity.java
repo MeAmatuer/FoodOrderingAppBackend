@@ -13,6 +13,7 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(name = "itemByUUID", query = "select q from ItemEntity q where q.uuid = :uuid")
 })
+
 public class ItemEntity implements Serializable {
 
     @Id
@@ -29,7 +30,8 @@ public class ItemEntity implements Serializable {
     @Column(name="item_name")
     @Size(max=30)
     @NotNull
-    private String ItemName;
+    private String itemName;
+
 
     @NotNull
     @Column(name="price")
@@ -40,16 +42,19 @@ public class ItemEntity implements Serializable {
     @NotNull
     private ItemType type;
 
-    @OneToMany(mappedBy = "item_id", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
-    private List<OrderItemEntity> orderItem = new ArrayList<>();
-
-    @OneToMany(mappedBy = "item_id", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
-    private List<CategoryItemEntity> categoryItem = new ArrayList<>();
-
     @ManyToMany
     @JoinTable(name = "restaurant_item", joinColumns = @JoinColumn(name = "item_id"),
             inverseJoinColumns = @JoinColumn(name = "restaurant_id"))
     private List<RestaurantEntity> restaurants = new ArrayList<>();
+
+    @OneToMany(mappedBy = "itemId", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
+    private List<OrderItemEntity> orderItem = new ArrayList<>();
+
+    @OneToMany(mappedBy = "itemId", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
+    private List<CategoryItemEntity> categoryItem = new ArrayList<>();
+
+    @OneToMany(mappedBy = "itemId", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
+    private List<RestaurantItemEntity> restaurantItem = new ArrayList<>();
 
     public Integer getId() {
         return id;
@@ -68,11 +73,11 @@ public class ItemEntity implements Serializable {
     }
 
     public String getItemName() {
-        return ItemName;
+        return itemName;
     }
 
     public void setItemName(String itemName) {
-        ItemName = itemName;
+        this.itemName = itemName;
     }
 
     public Integer getPrice() {
@@ -82,6 +87,7 @@ public class ItemEntity implements Serializable {
     public void setPrice(Integer price) {
         this.price = price;
     }
+
 
     public ItemType getType() {
         return type;
@@ -113,6 +119,17 @@ public class ItemEntity implements Serializable {
 
     public void setRestaurants(List<RestaurantEntity> restaurants) {
         this.restaurants = restaurants;
+    }
+
+    public List<RestaurantItemEntity> getRestaurantItem() {
+        return restaurantItem;
+    }
+
+    public void setRestaurantItem(List<RestaurantItemEntity> restaurantItem) {
+        this.restaurantItem = restaurantItem;
+    }
+
+    public ItemEntity() {
     }
 
 }

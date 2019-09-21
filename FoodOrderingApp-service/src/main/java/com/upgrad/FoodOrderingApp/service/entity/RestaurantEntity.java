@@ -32,25 +32,25 @@ public class RestaurantEntity implements Serializable {
     @Column(name="restaurant_name")
     @Size(max=30)
     @NotNull
-    private String RestaurantName;
+    private String restaurantName;
 
 
     @Column(name="photo_url")
     @Size(max=255)
     @NotNull
-    private String PhotoUrl;
+    private String photoUrl;
 
     @Column(name="customer_rating")
     @NotNull
-    private BigDecimal CustomerRating;
+    private Float customerRating;
 
     @Column(name="average_price_for_two")
     @NotNull
-    private Integer AvgPrice;
+    private Integer averagePriceForTwo;
 
     @Column(name="number_of_customers_rated")
     @NotNull
-    private Integer NumberCustomersRated;
+    private Integer numberOfCustomersRated;
 
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="address_id")
@@ -77,6 +77,13 @@ public class RestaurantEntity implements Serializable {
         this.categories = categories;
     }
 
+    @OneToMany(mappedBy = "restaurantId", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
+    private List<RestaurantCategoryEntity> restaurantCategory = new ArrayList<>();
+
+    @OneToMany(mappedBy = "restaurantId", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
+    private List<RestaurantItemEntity> restaurantItem = new ArrayList<>();
+
+
     public Integer getId() {
         return id;
     }
@@ -94,45 +101,44 @@ public class RestaurantEntity implements Serializable {
     }
 
     public String getRestaurantName() {
-        return RestaurantName;
+        return restaurantName;
     }
 
     public void setRestaurantName(String restaurantName) {
-        RestaurantName = restaurantName;
+        this.restaurantName = restaurantName;
     }
 
     public String getPhotoUrl() {
-        return PhotoUrl;
+        return photoUrl;
     }
 
     public void setPhotoUrl(String photoUrl) {
-        PhotoUrl = photoUrl;
+        this.photoUrl = photoUrl;
     }
 
-    public Double getCustomerRating() {
-        return CustomerRating.doubleValue();
+    public Float getCustomerRating() {
+        return customerRating;
     }
 
-    public void setCustomerRating(Double customerRating) {
-        this.CustomerRating = new BigDecimal(customerRating).setScale(2, RoundingMode.HALF_UP);
+    public void setCustomerRating(Float customerRating) {
+        this.customerRating = customerRating;
     }
 
-    public Integer getAvgPrice() {
-        return AvgPrice;
+    public Integer getAveragePriceForTwo() {
+        return averagePriceForTwo;
     }
 
-    public void setAvgPrice(Integer avgPrice) {
-        AvgPrice = avgPrice;
+    public void setAveragePriceForTwo(Integer averagePriceForTwo) {
+        this.averagePriceForTwo = averagePriceForTwo;
     }
 
-    public Integer getNumberCustomersRated() {
-        return NumberCustomersRated;
+    public Integer getNumberOfCustomersRated() {
+        return numberOfCustomersRated;
     }
 
-    public void setNumberCustomersRated(Integer numberCustomersRated) {
-        NumberCustomersRated = numberCustomersRated;
+    public void setNumberOfCustomersRated(Integer numberOfCustomersRated) {
+        this.numberOfCustomersRated = numberOfCustomersRated;
     }
-
 
     public AddressEntity getAddress() {
         return address;
@@ -156,6 +162,25 @@ public class RestaurantEntity implements Serializable {
 
     public void setItems(List<ItemEntity> items) {
         this.items = items;
+    }
+
+    public List<RestaurantCategoryEntity> getRestaurantCategory() {
+        return restaurantCategory;
+    }
+
+    public void setRestaurantCategory(List<RestaurantCategoryEntity> restaurantCategory) {
+        this.restaurantCategory = restaurantCategory;
+    }
+
+    public List<RestaurantItemEntity> getRestaurantItem() {
+        return restaurantItem;
+    }
+
+    public void setRestaurantItem(List<RestaurantItemEntity> restaurantItem) {
+        this.restaurantItem = restaurantItem;
+    }
+
+    public RestaurantEntity() {
     }
 
 }

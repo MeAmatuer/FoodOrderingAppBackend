@@ -57,12 +57,20 @@ public class OrdersEntity implements Serializable {
     @JoinColumn(name="restaurant_id")
     private RestaurantEntity restaurant;
 
-
     public OrdersEntity() {}
 
+    @OneToMany(mappedBy = "orderId", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
+    private List<OrderItemEntity> orderItem = new ArrayList<>();
 
+    public List<OrderItemEntity> getOrderItem() {
+        return orderItem;
+    }
 
-     public Integer getId() {
+    public void setOrderItem(List<OrderItemEntity> orderItem) {
+        this.orderItem = orderItem;
+    }
+
+    public Integer getId() {
         return id;
     }
 
@@ -140,5 +148,8 @@ public class OrdersEntity implements Serializable {
 
     public void setRestaurant(RestaurantEntity restaurant) {
         this.restaurant = restaurant;
+    }
+
+    public OrdersEntity() {
     }
 }

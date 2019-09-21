@@ -5,9 +5,14 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name="coupon")
+@NamedQueries({
+        @NamedQuery(name = "couponByCouponName", query = "select c from CouponEntity c where c.couponName = :couponName")
+})
+
 public class CouponEntity implements Serializable {
 
     @Id
@@ -24,7 +29,7 @@ public class CouponEntity implements Serializable {
     @Column(name="coupon_name")
     @Size(max=255)
     @NotNull
-    private String coupon_name;
+    private String couponName;
 
     @NotNull
     @Column(name="percent")
@@ -48,13 +53,13 @@ public class CouponEntity implements Serializable {
     public void setUuid(String uuid) {
         this.uuid = uuid;
     }
-
-    public String getCoupon_name() {
-        return coupon_name;
+   
+    public String getCouponName() {
+        return couponName;
     }
 
-    public void setCoupon_name(String coupon_name) {
-        this.coupon_name = coupon_name;
+    public void setCouponName(String couponName) {
+        this.couponName = couponName;
     }
 
     public Integer getPercent() {
@@ -71,5 +76,8 @@ public class CouponEntity implements Serializable {
 
     public void setOrders(List<OrdersEntity> orders) {
         this.orders = orders;
+    }
+
+    public CouponEntity() {
     }
 }
