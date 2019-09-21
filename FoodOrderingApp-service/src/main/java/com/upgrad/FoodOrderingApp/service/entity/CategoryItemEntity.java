@@ -21,6 +21,7 @@ public class CategoryItemEntity implements Serializable {
     @JoinColumn(name="category_id")
     private CategoryEntity categoryId;
 
+
     public Integer getId() {
         return id;
     }
@@ -28,6 +29,7 @@ public class CategoryItemEntity implements Serializable {
     public void setId(Integer id) {
         this.id = id;
     }
+
 
     public ItemEntity getItemId() {
         return itemId;

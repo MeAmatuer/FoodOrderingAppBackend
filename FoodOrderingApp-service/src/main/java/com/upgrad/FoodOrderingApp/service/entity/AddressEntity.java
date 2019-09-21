@@ -15,6 +15,7 @@ public class AddressEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @NotNull
     @Column(name="id")
     private Integer id;
 
@@ -25,22 +26,27 @@ public class AddressEntity implements Serializable {
 
     @Column(name="flat_buil_number")
     @Size(max=255)
-    private String flatBuildingNumber;
+    @NotNull
+   private String flatBuildingNumber;
 
     @Column(name="locality")
     @Size(max=255)
+    @NotNull
     private String locality;
 
     @Column(name="city")
     @Size(max=30)
+    @NotNull
     private String city;
 
     @Column(name="pincode")
     @Size(max=30)
+    @NotNull
     private String pincode;
 
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="state_id")
+    @NotNull
     private StateEntity stateId;
 
     @Column(name="active")
@@ -54,6 +60,18 @@ public class AddressEntity implements Serializable {
 
     @OneToMany(mappedBy = "address", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private List<OrdersEntity> orders = new ArrayList<>();
+
+    public AddressEntity() {}
+
+    public AddressEntity(String uuid, String flatBuilNo, String locality, String city, String pincode, StateEntity stateEntity) {
+        this.uuid = uuid;
+        this.flat_buil_number = flatBuilNo;
+        this.locality = locality;
+        this.city = city;
+        this.pincode = pincode;
+        this.State = stateEntity;
+        this.active = 1;
+    }
 
     public List<OrdersEntity> getOrders() {
         return orders;
@@ -142,7 +160,4 @@ public class AddressEntity implements Serializable {
     public void setRestaurant(List<RestaurantEntity> restaurant) {
         this.restaurant = restaurant;
     }
-
-    public AddressEntity() {
-    }
-}
+  }

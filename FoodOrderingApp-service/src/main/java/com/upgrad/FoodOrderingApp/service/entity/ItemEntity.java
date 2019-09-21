@@ -1,4 +1,6 @@
 package com.upgrad.FoodOrderingApp.service.entity;
+import com.upgrad.FoodOrderingApp.service.common.ItemType;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -8,6 +10,10 @@ import java.util.List;
 
 @Entity
 @Table(name="item")
+@NamedQueries({
+        @NamedQuery(name = "itemByUUID", query = "select q from ItemEntity q where q.uuid = :uuid")
+})
+
 public class ItemEntity implements Serializable {
 
     @Id
@@ -26,6 +32,7 @@ public class ItemEntity implements Serializable {
     @NotNull
     private String itemName;
 
+
     @NotNull
     @Column(name="price")
     private Integer price;
@@ -33,7 +40,12 @@ public class ItemEntity implements Serializable {
     @Column(name="type")
     @Size(max=10)
     @NotNull
-    private String type;
+    private ItemType type;
+
+    @ManyToMany
+    @JoinTable(name = "restaurant_item", joinColumns = @JoinColumn(name = "item_id"),
+            inverseJoinColumns = @JoinColumn(name = "restaurant_id"))
+    private List<RestaurantEntity> restaurants = new ArrayList<>();
 
     @OneToMany(mappedBy = "itemId", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private List<OrderItemEntity> orderItem = new ArrayList<>();
@@ -76,11 +88,12 @@ public class ItemEntity implements Serializable {
         this.price = price;
     }
 
-    public String getType() {
+
+    public ItemType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(ItemType type) {
         this.type = type;
     }
 
@@ -100,6 +113,14 @@ public class ItemEntity implements Serializable {
         this.categoryItem = categoryItem;
     }
 
+    public List<RestaurantEntity> getRestaurants() {
+        return restaurants;
+    }
+
+    public void setRestaurants(List<RestaurantEntity> restaurants) {
+        this.restaurants = restaurants;
+    }
+
     public List<RestaurantItemEntity> getRestaurantItem() {
         return restaurantItem;
     }
@@ -110,4 +131,5 @@ public class ItemEntity implements Serializable {
 
     public ItemEntity() {
     }
+
 }

@@ -13,10 +13,12 @@ import java.util.List;
 @NamedQueries ({
         @NamedQuery(name = "customerByContactNumber", query = "select c from CustomerEntity c where c.contactNumber = :contactNumber")
 })
+
 public class CustomerEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @NotNull
     @Column(name="id")
     private Integer id;
 
@@ -43,6 +45,7 @@ public class CustomerEntity implements Serializable {
     @Size(max = 30)
     @NotNull
     private String contactNumber;
+
 
     @Column(name = "password")
     @Size(max = 255)

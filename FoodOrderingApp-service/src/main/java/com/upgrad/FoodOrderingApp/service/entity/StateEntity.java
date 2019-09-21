@@ -4,6 +4,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NamedQueries({
@@ -13,7 +15,6 @@ import java.io.Serializable;
 
 @Table(name="state")
 public class StateEntity implements Serializable {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,6 +31,9 @@ public class StateEntity implements Serializable {
     @Size(max=30)
     @NotNull
     private String stateName;
+       
+    @OneToMany(mappedBy = "State", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
+    private List<AddressEntity> Addresses = new ArrayList<>();
 
     public Integer getId() {
         return id;
@@ -51,9 +55,17 @@ public class StateEntity implements Serializable {
         return stateName;
     }
 
-    public void setStateName(String state_name) {
+    public void setStateName(String stateName) {
         this.stateName = stateName;
     }
+
+   
+    public List<AddressEntity> getAddresses() {
+        return Addresses;
+    }
+
+    public void setAddresses(List<AddressEntity> addresses) {
+        Addresses = addresses;
 
     public StateEntity() {
     }

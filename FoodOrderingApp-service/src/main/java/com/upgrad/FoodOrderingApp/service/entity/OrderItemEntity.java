@@ -6,6 +6,11 @@ import java.io.Serializable;
 
 @Entity
 @Table(name="order_item")
+
+@NamedQueries({
+        @NamedQuery(name = "itemsByOrder", query = "select q from OrderItemEntity q where q.order = :ordersEntity"),
+})
+
 public class OrderItemEntity implements Serializable {
 
     @Id
@@ -38,11 +43,11 @@ public class OrderItemEntity implements Serializable {
         this.id = id;
     }
 
-    public OrdersEntity getOrderId() {
+    public OrdersEntity getOrder() {
         return orderId;
     }
 
-    public void setOrderId(OrdersEntity orderId) {
+    public void setOrder(OrdersEntity orderId) {
         this.orderId = orderId;
     }
 

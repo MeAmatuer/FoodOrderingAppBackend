@@ -12,6 +12,7 @@ import java.util.UUID;
 @NamedQueries({
         @NamedQuery(name = "couponByCouponName", query = "select c from CouponEntity c where c.couponName = :couponName")
 })
+
 public class CouponEntity implements Serializable {
 
     @Id
@@ -23,7 +24,7 @@ public class CouponEntity implements Serializable {
     @Column(name="uuid")
     @Size(max=200)
     @NotNull
-    private UUID uuid;
+    private String uuid;
 
     @Column(name="coupon_name")
     @Size(max=255)
@@ -45,14 +46,14 @@ public class CouponEntity implements Serializable {
         this.id = id;
     }
 
-    public UUID getUuid() {
+    public String getUuid() {
         return uuid;
     }
 
-    public void setUuid(UUID uuid) {
+    public void setUuid(String uuid) {
         this.uuid = uuid;
     }
-
+   
     public String getCouponName() {
         return couponName;
     }

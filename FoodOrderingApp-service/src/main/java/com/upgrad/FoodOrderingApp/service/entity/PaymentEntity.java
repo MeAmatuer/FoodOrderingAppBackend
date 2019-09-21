@@ -26,6 +26,7 @@ public class PaymentEntity implements Serializable {
     @NotNull
     private String paymentName;
 
+
     @OneToMany(mappedBy = "payment", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private List<OrdersEntity> orders = new ArrayList<>();
 
