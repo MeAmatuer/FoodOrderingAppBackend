@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name="order")
+@Table(name="orders")
 @NamedQueries({
         @NamedQuery(name = "pastOrdersByDate", query = "select o from OrderEntity o where o.customer = :customer order by o.date desc"),
         @NamedQuery(name = "ordersByCustomer", query = "select o from OrderEntity o where o.customer = :customer order by o.date desc "),

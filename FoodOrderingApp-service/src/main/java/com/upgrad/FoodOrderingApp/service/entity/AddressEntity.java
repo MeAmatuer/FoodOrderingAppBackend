@@ -5,13 +5,12 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
-@Table(name="address")
 @NamedQueries({
         @NamedQuery(name = "addressById", query = "select a from AddressEntity a where a.uuid = :addressId")
 })
+@Table(name="address")
 public class AddressEntity implements Serializable {
 
     @Id
@@ -58,18 +57,13 @@ public class AddressEntity implements Serializable {
     private CustomerEntity customer;
 
     @OneToMany(mappedBy = "address", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
+    private List<CustomerAddressEntity> customerAddresses = new ArrayList<>();
+
+    @OneToMany(mappedBy = "address", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private List<RestaurantEntity> restaurant = new ArrayList<>();
 
     @OneToMany(mappedBy = "address", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private List<OrderEntity> orders = new ArrayList<>();
-
-    public List<OrderEntity> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(List<OrderEntity> orders) {
-        this.orders = orders;
-    }
 
     public AddressEntity() {}
 
@@ -83,6 +77,13 @@ public class AddressEntity implements Serializable {
         this.active = 1;
     }
 
+    public List<OrderEntity> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<OrderEntity> orders) {
+        this.orders = orders;
+    }
 
     public Integer getId() {
         return id;
@@ -148,12 +149,36 @@ public class AddressEntity implements Serializable {
         this.active = active;
     }
 
+    public List<CustomerAddressEntity> getCustomerAddresses() {
+        return customerAddresses;
+    }
+
+    public void setCustomerAddresses(List<CustomerAddressEntity> customerAddresses) {
+        this.customerAddresses = customerAddresses;
+    }
+
     public List<RestaurantEntity> getRestaurant() {
         return restaurant;
     }
 
     public void setRestaurant(List<RestaurantEntity> restaurant) {
         this.restaurant = restaurant;
+    }
+
+    public String getFlatBuildingNumber() {
+        return flatBuildingNumber;
+    }
+
+    public void setFlatBuildingNumber(String flatBuildingNumber) {
+        this.flatBuildingNumber = flatBuildingNumber;
+    }
+
+    public StateEntity getStateId() {
+        return stateId;
+    }
+
+    public void setStateId(StateEntity stateId) {
+        this.stateId = stateId;
     }
 
     public CustomerEntity getCustomer() {
