@@ -5,13 +5,12 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
-@Table(name="address")
 @NamedQueries({
         @NamedQuery(name = "addressById", query = "select a from AddressEntity a where a.uuid = :addressId")
 })
+@Table(name="address")
 public class AddressEntity implements Serializable {
 
     @Id
@@ -52,24 +51,14 @@ public class AddressEntity implements Serializable {
     @Column(name="active")
     private Integer active;
 
-    @ManyToOne
-    @JoinTable(name = "customer_address", joinColumns = @JoinColumn(name = "address_id"),
-            inverseJoinColumns = @JoinColumn(name = "customer_id"))
-    private CustomerEntity customer;
+    @OneToMany(mappedBy = "address", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
+    private List<CustomerAddressEntity> customerAddresses = new ArrayList<>();
 
     @OneToMany(mappedBy = "address", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private List<RestaurantEntity> restaurant = new ArrayList<>();
 
     @OneToMany(mappedBy = "address", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private List<OrderEntity> orders = new ArrayList<>();
-
-    public List<OrderEntity> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(List<OrderEntity> orders) {
-        this.orders = orders;
-    }
 
     public AddressEntity() {}
 
@@ -83,6 +72,13 @@ public class AddressEntity implements Serializable {
         this.active = 1;
     }
 
+    public List<OrderEntity> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<OrderEntity> orders) {
+        this.orders = orders;
+    }
 
     public Integer getId() {
         return id;
@@ -148,19 +144,19 @@ public class AddressEntity implements Serializable {
         this.active = active;
     }
 
+    public List<CustomerAddressEntity> getCustomerAddresses() {
+        return customerAddresses;
+    }
+
+    public void setCustomerAddresses(List<CustomerAddressEntity> customerAddresses) {
+        this.customerAddresses = customerAddresses;
+    }
+
     public List<RestaurantEntity> getRestaurant() {
         return restaurant;
     }
 
     public void setRestaurant(List<RestaurantEntity> restaurant) {
         this.restaurant = restaurant;
-    }
-
-    public CustomerEntity getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(CustomerEntity customer) {
-        this.customer = customer;
     }
 }
