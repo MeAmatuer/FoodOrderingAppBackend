@@ -49,7 +49,7 @@ public class AddressDao {
 
     public AddressEntity getAddressByAddressId(final String addressId) {
         try {
-            AddressEntity address = entityManager.createNamedQuery("getAddressByAddressId", AddressEntity.class)
+            AddressEntity address = entityManager.createNamedQuery("addressById", AddressEntity.class)
                     .setParameter("addressId", addressId).getSingleResult();
             return address;
         } catch (NoResultException nre) {

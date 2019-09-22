@@ -7,6 +7,7 @@ import com.upgrad.FoodOrderingApp.service.entity.OrderItemEntity;
 import com.upgrad.FoodOrderingApp.service.entity.OrderEntity;
 import com.upgrad.FoodOrderingApp.service.entity.RestaurantEntity;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -45,12 +46,13 @@ public class OrderDao {
     }
 
 
-
+    @Transactional
     public OrderEntity createNewOrder(OrderEntity order) {
         entityManager.persist(order);
         return order;
     }
 
+    @Transactional
     public OrderItemEntity createNewOrderItem(OrderItemEntity orderItemEntity) {
         entityManager.persist(orderItemEntity);
         return orderItemEntity;
