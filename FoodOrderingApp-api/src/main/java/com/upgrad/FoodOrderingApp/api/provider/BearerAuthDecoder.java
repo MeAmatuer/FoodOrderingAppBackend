@@ -2,24 +2,19 @@ package com.upgrad.FoodOrderingApp.api.provider;
 
 import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
 
-/**
- * Provider to decode bearer token.
- */
 public class BearerAuthDecoder {
 
+    public final String BEARER_AUTH_PREFIX = "Bearer ";
     private final String accessToken;
-    private final String BEARER_AUTH_PREFIX = "Bearer";
 
-    public BearerAuthDecoder(final String bearerToken) throws AuthorizationFailedException{
-        if(!bearerToken.startsWith(BEARER_AUTH_PREFIX)) {
-            throw new AuthorizationFailedException("ATHR-004", "Invalid Authorization header format");
-        }
-
+    public BearerAuthDecoder(final String bearerToken) throws AuthorizationFailedException {
         final String[] bearerTokens = bearerToken.split(BEARER_AUTH_PREFIX);
-        if(bearerTokens.length != 2) {
-            throw new AuthorizationFailedException("ATHR-004", "Invalid Authorization header format");
+        if(bearerTokens.length == 2) {
+            this.accessToken = bearerTokens[1];
         }
-        this.accessToken = bearerTokens[1];
+        else {
+            this.accessToken = bearerToken;
+        }
 
     }
 
