@@ -51,6 +51,11 @@ public class AddressEntity implements Serializable {
     @Column(name="active")
     private Integer active;
 
+    @ManyToOne
+    @JoinTable(name = "customer_address", joinColumns = @JoinColumn(name = "address_id"),
+            inverseJoinColumns = @JoinColumn(name = "customer_id"))
+    private CustomerEntity customer;
+
     @OneToMany(mappedBy = "address", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private List<CustomerAddressEntity> customerAddresses = new ArrayList<>();
 
@@ -158,5 +163,29 @@ public class AddressEntity implements Serializable {
 
     public void setRestaurant(List<RestaurantEntity> restaurant) {
         this.restaurant = restaurant;
+    }
+
+    public String getFlatBuildingNumber() {
+        return flatBuildingNumber;
+    }
+
+    public void setFlatBuildingNumber(String flatBuildingNumber) {
+        this.flatBuildingNumber = flatBuildingNumber;
+    }
+
+    public StateEntity getStateId() {
+        return stateId;
+    }
+
+    public void setStateId(StateEntity stateId) {
+        this.stateId = stateId;
+    }
+
+    public CustomerEntity getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(CustomerEntity customer) {
+        this.customer = customer;
     }
 }
