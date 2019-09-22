@@ -29,7 +29,7 @@ public class CategoryEntity implements Serializable {
     @Column(name="category_name")
     @Size(max=255)
     @NotNull
-    private String CategoryName;
+    private String categoryName;
 
     @ManyToMany
     @JoinTable(name = "restaurant_category", joinColumns = @JoinColumn(name = "category_id"),
@@ -74,7 +74,7 @@ public class CategoryEntity implements Serializable {
     }
 
     public String getCategoryName() {
-        return CategoryName;
+        return categoryName;
     }
   
     public void setCategoryName(String categoryName) {

@@ -60,7 +60,7 @@ public class RestaurantController {
 
             RestaurantDetailsResponseAddress address = new RestaurantDetailsResponseAddress().
                     id(UUID.fromString(restaurantEntity.getAddress().getUuid())).
-                    flatBuildingName(restaurantEntity.getAddress().getFlat_buil_number()).
+                    flatBuildingName(restaurantEntity.getAddress().getFlatBuilNo()).
                     locality(restaurantEntity.getAddress().getLocality()).city(restaurantEntity.getAddress().getCity()).
                     pincode(restaurantEntity.getAddress().getPincode()).state(addressState);
 
@@ -116,7 +116,7 @@ public class RestaurantController {
 
             RestaurantDetailsResponseAddress responseAddress = new RestaurantDetailsResponseAddress().
                     id(UUID.fromString(restaurantEntity.getAddress().getUuid())).
-                    flatBuildingName(restaurantEntity.getAddress().getFlat_buil_number()).
+                    flatBuildingName(restaurantEntity.getAddress().getFlatBuilNo()).
                     locality(restaurantEntity.getAddress().getLocality()).city(restaurantEntity.getAddress().getCity()).
                     pincode(restaurantEntity.getAddress().getPincode()).state(responseAddressState);
 
@@ -171,7 +171,7 @@ public class RestaurantController {
             //Extracting address field of a restaurant
             RestaurantDetailsResponseAddress responseAddress = new RestaurantDetailsResponseAddress().
                     id(UUID.fromString(restaurantEntity.getAddress().getUuid())).
-                    flatBuildingName(restaurantEntity.getAddress().getFlat_buil_number()).
+                    flatBuildingName(restaurantEntity.getAddress().getFlatBuilNo()).
                     locality(restaurantEntity.getAddress().getLocality()).city(restaurantEntity.getAddress().getCity()).
                     pincode(restaurantEntity.getAddress().getPincode()).state(state);
 
@@ -212,7 +212,7 @@ public class RestaurantController {
         //Extracting address field of a restaurant
         RestaurantDetailsResponseAddress responseAddress = new RestaurantDetailsResponseAddress().
                 id(UUID.fromString(restaurantByRestaurantId.getAddress().getUuid())).
-                flatBuildingName(restaurantByRestaurantId.getAddress().getFlat_buil_number()).
+                flatBuildingName(restaurantByRestaurantId.getAddress().getFlatBuilNo()).
                 locality(restaurantByRestaurantId.getAddress().getLocality())
                 .city(restaurantByRestaurantId.getAddress().getCity())
                 .pincode(restaurantByRestaurantId.getAddress().getPincode()).state(state);

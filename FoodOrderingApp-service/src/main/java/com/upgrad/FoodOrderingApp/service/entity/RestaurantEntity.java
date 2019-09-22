@@ -12,7 +12,7 @@ import java.util.List;
 @Table(name="restaurant")
 @NamedQueries({
 
-      @NamedQuery(name = "getAllRestaurantsByRating", query = "select q from RestaurantEntity q order by q.CustomerRating desc"),
+      @NamedQuery(name = "getAllRestaurantsByRating", query = "select q from RestaurantEntity q order by q.customerRating desc"),
       @NamedQuery(name = "restaurantByUUID", query = "select q from RestaurantEntity q where q.uuid = :uuid"),
 })
 
@@ -42,7 +42,7 @@ public class RestaurantEntity implements Serializable {
 
     @Column(name="customer_rating")
     @NotNull
-    private Float customerRating;
+    private BigDecimal customerRating;
 
     @Column(name="average_price_for_two")
     @NotNull
@@ -116,27 +116,27 @@ public class RestaurantEntity implements Serializable {
         this.photoUrl = photoUrl;
     }
 
-    public Float getCustomerRating() {
-        return customerRating;
+    public Double getCustomerRating() {
+        return customerRating.doubleValue();
     }
 
-    public void setCustomerRating(Float customerRating) {
-        this.customerRating = customerRating;
+    public void setCustomerRating(Double customerRating) {
+        this.customerRating = new BigDecimal(customerRating).setScale(2, RoundingMode.HALF_UP);
     }
 
-    public Integer getAveragePriceForTwo() {
+    public Integer getAvgPrice() {
         return averagePriceForTwo;
     }
 
-    public void setAveragePriceForTwo(Integer averagePriceForTwo) {
+    public void setAvgPrice(Integer averagePriceForTwo) {
         this.averagePriceForTwo = averagePriceForTwo;
     }
 
-    public Integer getNumberOfCustomersRated() {
+    public Integer getNumberCustomersRated() {
         return numberOfCustomersRated;
     }
 
-    public void setNumberOfCustomersRated(Integer numberOfCustomersRated) {
+    public void setNumberCustomersRated(Integer numberOfCustomersRated) {
         this.numberOfCustomersRated = numberOfCustomersRated;
     }
 

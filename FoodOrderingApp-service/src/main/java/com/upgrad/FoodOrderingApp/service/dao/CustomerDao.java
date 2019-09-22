@@ -15,11 +15,14 @@ public class CustomerDao {
     private EntityManager entityManager;
 
 
-    public CustomerAuthEntity getCustomerAuthByAccessToken(String accessToken){
-        try{
+    public CustomerAuthEntity getCustomerAuthByAccessToken(String accessToken) {
+        try {
             return entityManager.createNamedQuery("customerAuthByAccessToken", CustomerAuthEntity.class)
-                    .setParameter("access_token",accessToken).getSingleResult();
-        } catch (NoResultException nre){
+                    .setParameter("access_token", accessToken).getSingleResult();
+        } catch (NoResultException nre) {
+            return null;
+        }
+    }
 
     public CustomerEntity findByContactNumber(String contactNumber) {
         try {

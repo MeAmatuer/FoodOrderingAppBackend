@@ -25,7 +25,7 @@ public class CategoryService {
     //It takes restaurant uuid as input param and returns sorted categories alphabetically
 
     public List<CategoryEntity> getCategoriesByRestaurant(String RestaurantUuid){
-        RestaurantEntity restaurantEntity = restaurantDao.getRestaurantByUuid(RestaurantUuid);
+        RestaurantEntity restaurantEntity = restaurantDao.restaurantByUUID(RestaurantUuid);
         return restaurantEntity.getCategories().stream().sorted(Comparator.comparing(CategoryEntity::getCategoryName)).collect(Collectors.toList());
     }
 

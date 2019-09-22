@@ -58,7 +58,7 @@ public class ItemService {
         List<ItemEntity> itemEntityList = new ArrayList<ItemEntity>();
         for (OrdersEntity orderEntity : orderDao.getOrdersByRestaurant(restaurantEntity)) {
             for (OrderItemEntity orderItemEntity : orderItemDao.getItemsByOrder(orderEntity)) {
-                itemEntityList.add(orderItemEntity.getItem_id());
+                itemEntityList.add(orderItemEntity.getItemId());
             }
         }
 

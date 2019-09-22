@@ -150,6 +150,4 @@ public class OrdersEntity implements Serializable {
         this.restaurant = restaurant;
     }
 
-    public OrdersEntity() {
-    }
 }
