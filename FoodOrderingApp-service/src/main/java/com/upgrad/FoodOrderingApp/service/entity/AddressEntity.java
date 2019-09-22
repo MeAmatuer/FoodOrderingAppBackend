@@ -5,17 +5,17 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
-@NamedQueries({
-        @NamedQuery(name = "getAddressByAddressId", query = "SELECT a FROM AddressEntity a WHERE a.uuid = :addressId")
-})
 @Table(name="address")
+@NamedQueries({
+        @NamedQuery(name = "addressById", query = "select a from AddressEntity a where a.uuid = :addressId")
+})
 public class AddressEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotNull
     @Column(name="id")
     private Integer id;
 
@@ -27,7 +27,7 @@ public class AddressEntity implements Serializable {
     @Column(name="flat_buil_number")
     @Size(max=255)
     @NotNull
-   private String flatBuildingNumber;
+    private String flatBuildingNumber;
 
     @Column(name="locality")
     @Size(max=255)
@@ -52,14 +52,24 @@ public class AddressEntity implements Serializable {
     @Column(name="active")
     private Integer active;
 
-    @OneToMany(mappedBy = "address", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
-    private List<CustomerAddressEntity> customerAddresses = new ArrayList<>();
+    @ManyToOne
+    @JoinTable(name = "customer_address", joinColumns = @JoinColumn(name = "address_id"),
+            inverseJoinColumns = @JoinColumn(name = "customer_id"))
+    private CustomerEntity customer;
 
     @OneToMany(mappedBy = "address", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private List<RestaurantEntity> restaurant = new ArrayList<>();
 
     @OneToMany(mappedBy = "address", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
-    private List<OrdersEntity> orders = new ArrayList<>();
+    private List<OrderEntity> orders = new ArrayList<>();
+
+    public List<OrderEntity> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<OrderEntity> orders) {
+        this.orders = orders;
+    }
 
     public AddressEntity() {}
 
@@ -73,13 +83,6 @@ public class AddressEntity implements Serializable {
         this.active = 1;
     }
 
-    public List<OrdersEntity> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(List<OrdersEntity> orders) {
-        this.orders = orders;
-    }
 
     public Integer getId() {
         return id;
@@ -145,14 +148,6 @@ public class AddressEntity implements Serializable {
         this.active = active;
     }
 
-    public List<CustomerAddressEntity> getCustomerAddresses() {
-        return customerAddresses;
-    }
-
-    public void setCustomerAddresses(List<CustomerAddressEntity> customerAddresses) {
-        this.customerAddresses = customerAddresses;
-    }
-
     public List<RestaurantEntity> getRestaurant() {
         return restaurant;
     }
@@ -160,4 +155,12 @@ public class AddressEntity implements Serializable {
     public void setRestaurant(List<RestaurantEntity> restaurant) {
         this.restaurant = restaurant;
     }
-  }
+
+    public CustomerEntity getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(CustomerEntity customer) {
+        this.customer = customer;
+    }
+}

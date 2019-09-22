@@ -10,14 +10,14 @@ import java.util.UUID;
 @Entity
 @Table(name="coupon")
 @NamedQueries({
-        @NamedQuery(name = "couponByCouponName", query = "select c from CouponEntity c where c.couponName = :couponName")
+        @NamedQuery(name = "couponByCouponName", query = "select c from CouponEntity c where c.couponName = :couponName"),
+        @NamedQuery(name = "couponByUUID", query = "select c from CouponEntity c where c.uuid = :couponId" )
 })
 
 public class CouponEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotNull
     @Column(name="id")
     private Integer id;
 
@@ -36,7 +36,16 @@ public class CouponEntity implements Serializable {
     private Integer percent;
 
     @OneToMany(mappedBy = "coupon", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
-    private List<OrdersEntity> orders = new ArrayList<>();
+    private List<OrderEntity> orders = new ArrayList<>();
+
+    public CouponEntity() {
+    }
+
+    public CouponEntity(String uuid, String couponName, Integer percent) {
+        this.uuid = uuid;
+        this.couponName = couponName;
+        this.percent = percent;
+    }
 
     public Integer getId() {
         return id;
@@ -53,7 +62,7 @@ public class CouponEntity implements Serializable {
     public void setUuid(String uuid) {
         this.uuid = uuid;
     }
-   
+
     public String getCouponName() {
         return couponName;
     }
@@ -70,14 +79,12 @@ public class CouponEntity implements Serializable {
         this.percent = percent;
     }
 
-    public List<OrdersEntity> getOrders() {
+    public List<OrderEntity> getOrders() {
         return orders;
     }
 
-    public void setOrders(List<OrdersEntity> orders) {
+    public void setOrders(List<OrderEntity> orders) {
         this.orders = orders;
     }
 
-    public CouponEntity() {
-    }
 }

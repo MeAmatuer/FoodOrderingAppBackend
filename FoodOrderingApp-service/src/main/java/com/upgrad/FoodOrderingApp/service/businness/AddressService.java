@@ -2,16 +2,16 @@ package com.upgrad.FoodOrderingApp.service.businness;
 
 import com.upgrad.FoodOrderingApp.service.dao.AddressDao;
 import com.upgrad.FoodOrderingApp.service.dao.CustomerAddressDao;
-import com.upgrad.FoodOrderingApp.service.dao.StateDao;
 import com.upgrad.FoodOrderingApp.service.entity.AddressEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerAddressEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
-import com.upgrad.FoodOrderingApp.service.entity.StateEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AddressNotFoundException;
 import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
-import com.upgrad.FoodOrderingApp.service.exception.SaveAddressException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.upgrad.FoodOrderingApp.service.dao.StateDao;
+import com.upgrad.FoodOrderingApp.service.entity.StateEntity;
+import com.upgrad.FoodOrderingApp.service.exception.SaveAddressException;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,10 +27,14 @@ public class AddressService {
     private AddressDao addressDao;
 
     @Autowired
-    private StateDao stateDao;
+    private CustomerAddressDao customerAddressDao;
 
     @Autowired
-    private CustomerAddressDao customerAddressDao;
+    private StateDao stateDao;
+
+
+     //Service Class method that is called to get the Address entity when the Address UUID is passed
+
 
     public StateEntity getStateByUUID(final String stateUUID) throws AddressNotFoundException {
 
@@ -124,3 +128,4 @@ public class AddressService {
 
     }
 }
+

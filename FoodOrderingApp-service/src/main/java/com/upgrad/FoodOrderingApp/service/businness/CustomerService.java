@@ -1,15 +1,13 @@
 package com.upgrad.FoodOrderingApp.service.businness;
-
-
 import com.upgrad.FoodOrderingApp.service.dao.CustomerDao;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.time.ZonedDateTime;
 import com.upgrad.FoodOrderingApp.service.dao.CustomerAuthDao;
-import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AuthenticationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.SignUpRestrictedException;
 import com.upgrad.FoodOrderingApp.service.exception.UpdateCustomerException;
@@ -25,20 +23,20 @@ public class CustomerService {
 
     @Autowired
     private CustomerDao customerDao;
-  
+
     @Autowired
     private CustomerAuthDao customerAuthDao;
 
     @Autowired
     private PasswordCryptographyProvider passwordCryptographyProvider;
 
-   
+
     @Transactional(propagation = Propagation.REQUIRED)
     public CustomerEntity saveCustomer(CustomerEntity newCustomer) throws SignUpRestrictedException {
         // Finds customer based on contact number
         CustomerEntity existingCustomer = customerDao.findByContactNumber(newCustomer.getContactNumber());
         // Checks if customer with given contact number exists
-        if (existingCustomer != null){
+        if (existingCustomer != null) {
             throw new SignUpRestrictedException("SGR-001", "This contact number is already registered! Try other contact number");
         }
         // Verifies if all input fields are provided
@@ -68,7 +66,7 @@ public class CustomerService {
     public CustomerAuthEntity authenticate(final String username, final String password) throws AuthenticationFailedException {
         // Check if the given username exists in the database
         CustomerEntity registeredCustomer = customerDao.findByContactNumber(username);
-        if ( registeredCustomer == null ) {
+        if (registeredCustomer == null) {
             throw new AuthenticationFailedException("ATH-001", "This contact number has not been registered!");
         }
         final String encryptedPassword = passwordCryptographyProvider.encrypt(password, registeredCustomer.getSalt());
@@ -85,8 +83,7 @@ public class CustomerService {
             customerAuthEntity.setLoginAt(now);
             CustomerAuthEntity authCustomer = customerAuthDao.createCustomerAuth(customerAuthEntity);
             return authCustomer;
-        }
-        else {
+        } else {
             throw new AuthenticationFailedException("ATH-002", "Invalid Credentials");
         }
     }
@@ -106,7 +103,7 @@ public class CustomerService {
         }
         // Check if the customer's session has got expired
         now = ZonedDateTime.now(ZoneId.systemDefault());
-        if (loggedInCustomerAuth.getExpiresAt().isBefore(now) ||  loggedInCustomerAuth.getExpiresAt().isEqual(now)) {
+        if (loggedInCustomerAuth.getExpiresAt().isBefore(now) || loggedInCustomerAuth.getExpiresAt().isEqual(now)) {
             throw new AuthorizationFailedException("ATHR-003", "Your session is expired. Log in again to access this endpoint.");
         }
         loggedInCustomerAuth.setLogoutAt(ZonedDateTime.now(ZoneId.systemDefault()));
@@ -122,7 +119,7 @@ public class CustomerService {
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public CustomerEntity updateCustomerPassword(final String oldPassword, final String newPassword, final CustomerEntity customer) throws AuthorizationFailedException, UpdateCustomerException{
+    public CustomerEntity updateCustomerPassword(final String oldPassword, final String newPassword, final CustomerEntity customer) throws AuthorizationFailedException, UpdateCustomerException {
         // Update customer password in the database
         if (!validPassword(newPassword)) {
             throw new UpdateCustomerException("UCR-001", "Weak password!");
@@ -138,6 +135,8 @@ public class CustomerService {
         CustomerEntity updatedCustomer = customerDao.updatePassword(customer);
         return updatedCustomer;
     }
+
+
 
     @Transactional(propagation = Propagation.REQUIRED)
     public CustomerEntity getCustomer(final String accessToken) throws AuthorizationFailedException {

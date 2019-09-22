@@ -5,17 +5,17 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Entity
+@Table(name="customer_address")
 @NamedQueries({
         @NamedQuery(name = "getAddressesByCustomer", query = "SELECT cae FROM CustomerAddressEntity cae WHERE cae.customer = :customer"),
         @NamedQuery(name = "customerAddressByAddress", query = "SELECT cae FROM CustomerAddressEntity cae WHERE cae.address = :address")
 })
 
-@Table(name="customer_address")
+
 public class CustomerAddressEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotNull
     @Column(name="id")
     private Integer id;
 

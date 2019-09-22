@@ -8,13 +8,23 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
 @Repository
-
 public class ItemDao {
 
     @PersistenceContext
     private EntityManager entityManager;
 
 
+    public ItemEntity getItemById(String itemId) {
+
+        try {
+            ItemEntity itemEntity = entityManager.createNamedQuery("itemById", ItemEntity.class)
+                    .setParameter("itemId", itemId)
+                    .getSingleResult();
+            return itemEntity;
+        } catch (NoResultException nre) {
+            return null;
+        }
+    }
     //This method returns Item details based on the input id parameter
 
 

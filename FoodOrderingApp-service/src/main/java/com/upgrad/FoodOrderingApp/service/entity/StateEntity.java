@@ -31,7 +31,14 @@ public class StateEntity implements Serializable {
     @Size(max=30)
     @NotNull
     private String stateName;
-       
+
+    public StateEntity() {}
+
+    public StateEntity(String uuid, String name) {
+        this.uuid = uuid;
+        this.stateName = name;
+    }
+
     @OneToMany(mappedBy = "stateId", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private List<AddressEntity> Addresses = new ArrayList<>();
 
@@ -59,20 +66,8 @@ public class StateEntity implements Serializable {
         this.stateName = stateName;
     }
 
-   
-    public List<AddressEntity> getAddresses() {
-        return Addresses;
-    }
-
-    public void setAddresses(List<AddressEntity> addresses) {
-        Addresses = addresses;
-    }
-
-    public StateEntity() {
-    }
-
-    public StateEntity(@Size(max = 200) @NotNull String uuid, @Size(max = 30) @NotNull String stateName) {
-        this.uuid = uuid;
-        this.stateName = stateName;
-    }
 }
+
+
+
+

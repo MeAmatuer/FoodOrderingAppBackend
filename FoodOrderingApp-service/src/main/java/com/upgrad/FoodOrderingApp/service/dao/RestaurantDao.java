@@ -14,6 +14,19 @@ public class RestaurantDao {
     @PersistenceContext
     private EntityManager entityManager;
 
+
+
+    public RestaurantEntity getRestaurantById(String restaurantId) {
+        try {
+            RestaurantEntity restaurantEntity = entityManager.createNamedQuery("restaurantById", RestaurantEntity.class)
+                    .setParameter("restaurantId", restaurantId)
+                    .getSingleResult();
+            return restaurantEntity;
+        }catch (NoResultException nre){
+            return null;
+        }
+    }
+
     //This method queries DB to get all the restaurants from DB
     //Restaurant List is returned as per the restaurant ratings
 

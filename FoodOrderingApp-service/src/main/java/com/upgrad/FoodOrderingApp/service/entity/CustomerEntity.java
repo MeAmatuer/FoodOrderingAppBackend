@@ -10,15 +10,15 @@ import java.util.List;
 
 @Entity
 @Table(name="customer")
-@NamedQueries ({
-        @NamedQuery(name = "customerByContactNumber", query = "select c from CustomerEntity c where c.contactNumber = :contactNumber")
+@NamedQueries({
+        @NamedQuery(name = "customerByUUID", query = "select c from CustomerEntity c where c.uuid = :uuid"),
+        @NamedQuery(name = "customerByContactNumber", query = "select c from CustomerEntity c where c.contactNumber = :contactNumber"),
 })
 
 public class CustomerEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotNull
     @Column(name="id")
     private Integer id;
 
@@ -46,7 +46,6 @@ public class CustomerEntity implements Serializable {
     @NotNull
     private String contactNumber;
 
-
     @Column(name = "password")
     @Size(max = 255)
     @NotNull
@@ -61,8 +60,20 @@ public class CustomerEntity implements Serializable {
     private List<CustomerAddressEntity> customerAddresses = new ArrayList<>();
 
     @OneToMany(mappedBy = "customer", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-    private List<OrdersEntity> orders = new ArrayList<>();
+    private List<OrderEntity> orders = new ArrayList<>();
 
+    @OneToMany
+    @JoinTable(name = "customer_address", joinColumns = @JoinColumn(name = "customer_id"),
+            inverseJoinColumns = @JoinColumn(name = "address_id"))
+    private List<AddressEntity> addresses = new ArrayList<>();
+
+    public List<AddressEntity> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(List<AddressEntity> addresses) {
+        this.addresses = addresses;
+    }
 
     public Integer getId() {
         return id;
@@ -136,11 +147,11 @@ public class CustomerEntity implements Serializable {
         this.customerAddresses = customerAddresses;
     }
 
-    public List<OrdersEntity> getOrders() {
+    public List<OrderEntity> getOrders() {
         return orders;
     }
 
-    public void setOrders(List<OrdersEntity> orders) {
+    public void setOrders(List<OrderEntity> orders) {
         this.orders = orders;
     }
 

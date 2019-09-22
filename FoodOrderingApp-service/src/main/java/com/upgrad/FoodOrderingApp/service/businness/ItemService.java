@@ -1,4 +1,16 @@
 package com.upgrad.FoodOrderingApp.service.businness;
+
+import com.upgrad.FoodOrderingApp.service.dao.ItemDao;
+import com.upgrad.FoodOrderingApp.service.dao.OrderItemDao;
+import com.upgrad.FoodOrderingApp.service.entity.ItemEntity;
+import com.upgrad.FoodOrderingApp.service.entity.OrderEntity;
+import com.upgrad.FoodOrderingApp.service.entity.OrderItemEntity;
+import com.upgrad.FoodOrderingApp.service.exception.ItemNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
 import com.upgrad.FoodOrderingApp.service.dao.CategoryDao;
 import com.upgrad.FoodOrderingApp.service.dao.ItemDao;
 import com.upgrad.FoodOrderingApp.service.dao.RestaurantDao;
@@ -6,7 +18,6 @@ import com.upgrad.FoodOrderingApp.service.entity.CategoryEntity;
 import com.upgrad.FoodOrderingApp.service.entity.ItemEntity;
 import com.upgrad.FoodOrderingApp.service.dao.*;
 import com.upgrad.FoodOrderingApp.service.entity.OrderItemEntity;
-import com.upgrad.FoodOrderingApp.service.entity.OrdersEntity;
 import com.upgrad.FoodOrderingApp.service.entity.RestaurantEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,16 +35,33 @@ public class ItemService {
     private ItemDao itemDao;
 
     @Autowired
-    private OrderDao orderDao;
+    private OrderItemDao orderItemDao;
 
     @Autowired
-    private OrderItemDao orderItemDao;
+    private OrderDao orderDao;
 
     @Autowired
     private RestaurantDao restaurantDao;
 
     @Autowired
     private CategoryDao categoryDao;
+
+     //Method called to get the ItemEntity Instance by passing the UUID
+
+
+    public ItemEntity getItemByUUID(String itemId) throws ItemNotFoundException {
+        ItemEntity itemEntity = itemDao.getItemById(itemId);
+        if(itemEntity == null){
+            throw new ItemNotFoundException("INF-003", "No item by this id exist");
+        }else {
+            return itemEntity;
+        }
+    }
+
+    public List<OrderItemEntity> getItemsByOrder(OrderEntity orderEntity) {
+        return orderItemDao.getItemsByOrder(orderEntity);
+    }
+
 
     //Returns category items based on the input restaurant Id and the category Id
     public List<ItemEntity> getItemsByCategoryAndRestaurant(String restaurantId, String categoryId) {
@@ -56,7 +84,7 @@ public class ItemService {
 
     public List<ItemEntity> getItemsByPopularity(RestaurantEntity restaurantEntity) {
         List<ItemEntity> itemEntityList = new ArrayList<ItemEntity>();
-        for (OrdersEntity orderEntity : orderDao.getOrdersByRestaurant(restaurantEntity)) {
+        for (OrderEntity orderEntity : orderDao.getOrdersByRestaurant(restaurantEntity)) {
             for (OrderItemEntity orderItemEntity : orderItemDao.getItemsByOrder(orderEntity)) {
                 itemEntityList.add(orderItemEntity.getItemId());
             }

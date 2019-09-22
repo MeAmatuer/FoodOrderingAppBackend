@@ -17,7 +17,6 @@ public class CategoryEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotNull
     @Column(name="id")
     private Integer id;
 
@@ -48,9 +47,8 @@ public class CategoryEntity implements Serializable {
     public void setRestaurants(List<RestaurantEntity> restaurants) {
         this.restaurants = restaurants;
     }
-  
 
-    @OneToMany(mappedBy = "categoryId", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+   @OneToMany(mappedBy = "categoryId", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
     private List<RestaurantCategoryEntity> restaurantCategory = new ArrayList<>();
 
     @OneToMany(mappedBy = "categoryId", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
@@ -76,12 +74,12 @@ public class CategoryEntity implements Serializable {
     public String getCategoryName() {
         return categoryName;
     }
-  
+
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
     }
-
-    public List<ItemEntity> getItems() {
+  
+     public List<ItemEntity> getItems() {
         return items;
     }
 
@@ -89,7 +87,6 @@ public class CategoryEntity implements Serializable {
         this.items = items;
     }
  
-
     public List<RestaurantCategoryEntity> getRestaurantCategory() {
         return restaurantCategory;
     }

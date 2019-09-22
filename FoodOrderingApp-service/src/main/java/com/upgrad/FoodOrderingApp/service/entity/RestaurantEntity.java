@@ -11,16 +11,16 @@ import java.util.List;
 @Entity
 @Table(name="restaurant")
 @NamedQueries({
-
-      @NamedQuery(name = "getAllRestaurantsByRating", query = "select q from RestaurantEntity q order by q.customerRating desc"),
-      @NamedQuery(name = "restaurantByUUID", query = "select q from RestaurantEntity q where q.uuid = :uuid"),
+        @NamedQuery(name = "restaurantById", query = "select r from RestaurantEntity r where r.uuid = :restaurantId"),
+        @NamedQuery(name = "getAllRestaurantsByRating", query = "select q from RestaurantEntity q order by q.customerRating desc"),
+        @NamedQuery(name = "restaurantByUUID", query = "select q from RestaurantEntity q where q.uuid = :uuid"),
 })
+
 
 public class RestaurantEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotNull
     @Column(name="id")
     private Integer id;
 
@@ -33,7 +33,6 @@ public class RestaurantEntity implements Serializable {
     @Size(max=30)
     @NotNull
     private String restaurantName;
-
 
     @Column(name="photo_url")
     @Size(max=255)
@@ -57,7 +56,7 @@ public class RestaurantEntity implements Serializable {
     private AddressEntity address;
 
     @OneToMany(mappedBy = "restaurant", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
-    private List<OrdersEntity> orders = new ArrayList<>();
+    private List<OrderEntity> orders = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(name = "restaurant_category", joinColumns = @JoinColumn(name = "restaurant_id"),
@@ -148,11 +147,11 @@ public class RestaurantEntity implements Serializable {
         this.address = address;
     }
 
-    public List<OrdersEntity> getOrders() {
+    public List<OrderEntity> getOrders() {
         return orders;
     }
 
-    public void setOrders(List<OrdersEntity> orders) {
+    public void setOrders(List<OrderEntity> orders) {
         this.orders = orders;
     }
 

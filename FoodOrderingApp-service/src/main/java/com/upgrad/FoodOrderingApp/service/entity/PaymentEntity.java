@@ -5,14 +5,19 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name="payment")
+@NamedQueries({
+        @NamedQuery(name = "paymentsByPaymentId", query = "select p from PaymentEntity p where p.uuid = :paymentId"),
+        @NamedQuery(name = "getPaymentMethods", query = "select p from PaymentEntity p")
+
+})
 public class PaymentEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotNull
     @Column(name="id")
     private Integer id;
 
@@ -26,9 +31,16 @@ public class PaymentEntity implements Serializable {
     @NotNull
     private String paymentName;
 
-
     @OneToMany(mappedBy = "payment", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
-    private List<OrdersEntity> orders = new ArrayList<>();
+    private List<OrderEntity> orders = new ArrayList<>();
+
+    public PaymentEntity() {}
+
+    public PaymentEntity(@NotNull @Size(max = 200) String uuid, @NotNull @Size(max = 255) String paymentName) {
+        this.uuid = uuid;
+        this.paymentName = paymentName;
+    }
+
 
     public Integer getId() {
         return id;
@@ -54,14 +66,12 @@ public class PaymentEntity implements Serializable {
         this.paymentName = paymentName;
     }
 
-    public List<OrdersEntity> getOrders() {
+    public List<OrderEntity> getOrders() {
         return orders;
     }
 
-    public void setOrders(List<OrdersEntity> orders) {
+    public void setOrders(List<OrderEntity> orders) {
         this.orders = orders;
     }
 
-    public PaymentEntity() {
-    }
 }

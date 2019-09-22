@@ -24,6 +24,8 @@ public class RestaurantService {
     @Autowired
     private CategoryDao categoryDao;
 
+
+
     //This method returns all the restaurants according to the customer ratings
 
     public List<RestaurantEntity> restaurantsByRating() {

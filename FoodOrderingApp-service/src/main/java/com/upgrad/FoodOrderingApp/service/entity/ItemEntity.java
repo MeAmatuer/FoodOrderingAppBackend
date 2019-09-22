@@ -11,14 +11,14 @@ import java.util.List;
 @Entity
 @Table(name="item")
 @NamedQueries({
-        @NamedQuery(name = "itemByUUID", query = "select q from ItemEntity q where q.uuid = :uuid")
+        @NamedQuery(name = "itemById", query = "select i from ItemEntity i where i.uuid = :itemId"),
+        @NamedQuery(name = "itemByUUID", query = "select i from ItemEntity i where i.uuid = :uuid"),
 })
 
 public class ItemEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotNull
     @Column(name="id")
     private Integer id;
 
@@ -31,7 +31,6 @@ public class ItemEntity implements Serializable {
     @Size(max=30)
     @NotNull
     private String itemName;
-
 
     @NotNull
     @Column(name="price")
@@ -87,7 +86,6 @@ public class ItemEntity implements Serializable {
     public void setPrice(Integer price) {
         this.price = price;
     }
-
 
     public ItemType getType() {
         return type;

@@ -10,11 +10,27 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
+
 @Repository
 public class AddressDao {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+
+     // Method that fetches the Address from the Database
+     //param addressId
+
+    public AddressEntity getAddressById(String addressId) {
+        try {
+            AddressEntity addressEntity = entityManager.createNamedQuery("addressById", AddressEntity.class)
+                    .setParameter("addressId", addressId)
+                    .getSingleResult();
+            return addressEntity;
+        }catch (NoResultException nre){
+            return null;
+        }
+    }
 
     public AddressEntity saveAddress(final AddressEntity address) {
         entityManager.persist(address);

@@ -1,3 +1,6 @@
+/**
+ * Provider to decode basic auth credentials.
+ */
 package com.upgrad.FoodOrderingApp.api.provider;
 
 import com.upgrad.FoodOrderingApp.service.exception.AuthenticationFailedException;
