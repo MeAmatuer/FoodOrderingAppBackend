@@ -18,11 +18,11 @@ public class CustomerAuthDao {
         return customerAuthEntity;
     }
 
-    public CustomerAuthEntity findByAccessToken(final String accessToken) {
+    public CustomerAuthEntity findCustAuthByAccessToken(final String accessToken) {
         final CustomerAuthEntity loggedInCustomerAuth;
         try {
             loggedInCustomerAuth = entityManager.createNamedQuery("customerAuthByAccessToken", CustomerAuthEntity.class)
-                                .setParameter("accessToken", accessToken).getSingleResult();
+                    .setParameter("accessToken", accessToken).getSingleResult();
         } catch (NoResultException nre) {
             return null;
         }
@@ -33,5 +33,4 @@ public class CustomerAuthDao {
         entityManager.merge(customerAuthEntity);
         return customerAuthEntity;
     }
-
 }

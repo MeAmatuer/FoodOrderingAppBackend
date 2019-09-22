@@ -11,13 +11,16 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
+@Table(name="order")
 @NamedQueries({
         @NamedQuery(name = "pastOrdersByDate", query = "select o from OrderEntity o where o.customer = :customer order by o.date desc"),
         @NamedQuery(name = "ordersByCustomer", query = "select o from OrderEntity o where o.customer = :customer order by o.date desc "),
+        @NamedQuery(name = "ordersByRestaurant", query = "select q from OrderEntity q where q.restaurant = :restaurant"),
 
 })
-@Table(name="orders")
+
 public class OrderEntity implements Serializable {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,11 +1,3 @@
-/* 
- * Copyright 2017-2018, Redux Software. 
- * 
- * File: BearerAuthDecoder.java
- * Date: Nov 10, 2017
- * Author: P7107311
- * URL: www.redux.com
-*/
 package com.upgrad.FoodOrderingApp.api.provider;
 
 import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
@@ -28,10 +20,10 @@ public class BearerAuthDecoder {
             throw new AuthorizationFailedException("ATHR-004", "Invalid Authorization header format");
         }
         this.accessToken = bearerTokens[1];
+
     }
 
     public String getAccessToken() {
         return accessToken;
     }
-
 }

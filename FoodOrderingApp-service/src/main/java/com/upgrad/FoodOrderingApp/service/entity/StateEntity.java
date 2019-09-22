@@ -4,11 +4,17 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
+@NamedQueries({
+        @NamedQuery(name = "stateByUUID", query = "SELECT s from StateEntity s WHERE  s.uuid = :uuid"),
+        @NamedQuery(name = "getAllStates", query = "SELECT s FROM StateEntity s")
+})
+
 @Table(name="state")
 public class StateEntity implements Serializable {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,15 +32,15 @@ public class StateEntity implements Serializable {
     @NotNull
     private String stateName;
 
-   /* @OneToMany(mappedBy = "stateId", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
-    private List<AddressEntity> addresses = new ArrayList<>();
-*/
     public StateEntity() {}
 
     public StateEntity(String uuid, String name) {
         this.uuid = uuid;
         this.stateName = name;
     }
+
+    @OneToMany(mappedBy = "stateId", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
+    private List<AddressEntity> Addresses = new ArrayList<>();
 
     public Integer getId() {
         return id;
@@ -60,12 +66,8 @@ public class StateEntity implements Serializable {
         this.stateName = stateName;
     }
 
-    /*public List<AddressEntity> getAddresses() {
-        return addresses;
-    }
+}
 
-    public void setAddresses(List<AddressEntity> addresses) {
-        this.addresses = addresses;
-    }*/
 
-    }
+
+

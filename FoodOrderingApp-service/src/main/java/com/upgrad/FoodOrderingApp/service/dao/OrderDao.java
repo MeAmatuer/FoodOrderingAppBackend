@@ -5,6 +5,7 @@ import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
 import com.upgrad.FoodOrderingApp.service.entity.OrderEntity;
 import com.upgrad.FoodOrderingApp.service.entity.OrderItemEntity;
 import com.upgrad.FoodOrderingApp.service.entity.OrderEntity;
+import com.upgrad.FoodOrderingApp.service.entity.RestaurantEntity;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -58,6 +59,18 @@ public class OrderDao {
     public List<OrderEntity> getOrdersByCustomers(CustomerEntity customerEntity) {
         try {
             return entityManager.createNamedQuery("ordersByCustomer", OrderEntity.class).setParameter("customer", customerEntity).getResultList();
+        }
+        catch (NoResultException nre) {
+            return null;
+        }
+    }
+
+
+            //This method fetches and returns all the orders of a restaurant
+
+    public List<OrderEntity> getOrdersByRestaurant(RestaurantEntity restaurant) {
+        try {
+            return entityManager.createNamedQuery("ordersByRestaurant", OrderEntity.class).setParameter("restaurant", restaurant).getResultList();
         } catch (NoResultException nre) {
             return null;
         }

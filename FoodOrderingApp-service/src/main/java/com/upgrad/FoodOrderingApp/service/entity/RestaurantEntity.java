@@ -11,8 +11,12 @@ import java.util.List;
 @Entity
 @Table(name="restaurant")
 @NamedQueries({
-        @NamedQuery(name = "restaurantById", query = "select r from RestaurantEntity r where r.uuid = :restaurantId")
+        @NamedQuery(name = "restaurantById", query = "select r from RestaurantEntity r where r.uuid = :restaurantId"),
+        @NamedQuery(name = "getAllRestaurantsByRating", query = "select q from RestaurantEntity q order by q.customerRating desc"),
+        @NamedQuery(name = "restaurantByUUID", query = "select q from RestaurantEntity q where q.uuid = :uuid"),
 })
+
+
 public class RestaurantEntity implements Serializable {
 
     @Id
@@ -42,11 +46,11 @@ public class RestaurantEntity implements Serializable {
 
     @Column(name="average_price_for_two")
     @NotNull
-    private Integer AvgPrice;
+    private Integer averagePriceForTwo;
 
     @Column(name="number_of_customers_rated")
     @NotNull
-    private Integer NumberCustomersRated;
+    private Integer numberOfCustomersRated;
 
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="address_id")
@@ -55,11 +59,30 @@ public class RestaurantEntity implements Serializable {
     @OneToMany(mappedBy = "restaurant", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private List<OrderEntity> orders = new ArrayList<>();
 
+    @ManyToMany
+    @JoinTable(name = "restaurant_category", joinColumns = @JoinColumn(name = "restaurant_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
+    private List<CategoryEntity> categories = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(name = "restaurant_item", joinColumns = @JoinColumn(name = "restaurant_id"),
+            inverseJoinColumns = @JoinColumn(name = "item_id"))
+    private List<ItemEntity> items = new ArrayList<>();
+
+    public List<CategoryEntity> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<CategoryEntity> categories) {
+        this.categories = categories;
+    }
+
     @OneToMany(mappedBy = "restaurantId", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private List<RestaurantCategoryEntity> restaurantCategory = new ArrayList<>();
 
     @OneToMany(mappedBy = "restaurantId", cascade= CascadeType.ALL, fetch= FetchType.LAZY)
     private List<RestaurantItemEntity> restaurantItem = new ArrayList<>();
+
 
     public Integer getId() {
         return id;
@@ -98,23 +121,23 @@ public class RestaurantEntity implements Serializable {
     }
 
     public void setCustomerRating(Double customerRating) {
-        this.customerRating = new BigDecimal(customerRating).setScale(2, RoundingMode.HALF_UP);;
+        this.customerRating = new BigDecimal(customerRating).setScale(2, RoundingMode.HALF_UP);
     }
 
     public Integer getAvgPrice() {
-        return AvgPrice;
+        return averagePriceForTwo;
     }
 
-    public void setAvgPrice(Integer avgPrice) {
-        AvgPrice = avgPrice;
+    public void setAvgPrice(Integer averagePriceForTwo) {
+        this.averagePriceForTwo = averagePriceForTwo;
     }
 
     public Integer getNumberCustomersRated() {
-        return NumberCustomersRated;
+        return numberOfCustomersRated;
     }
 
-    public void setNumberCustomersRated(Integer numberCustomersRated) {
-        NumberCustomersRated = numberCustomersRated;
+    public void setNumberCustomersRated(Integer numberOfCustomersRated) {
+        this.numberOfCustomersRated = numberOfCustomersRated;
     }
 
     public AddressEntity getAddress() {
@@ -131,6 +154,14 @@ public class RestaurantEntity implements Serializable {
 
     public void setOrders(List<OrderEntity> orders) {
         this.orders = orders;
+    }
+
+    public List<ItemEntity> getItems() {
+        return items;
+    }
+
+    public void setItems(List<ItemEntity> items) {
+        this.items = items;
     }
 
     public List<RestaurantCategoryEntity> getRestaurantCategory() {
@@ -151,5 +182,6 @@ public class RestaurantEntity implements Serializable {
 
     public RestaurantEntity() {
     }
+
 }
 

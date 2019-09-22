@@ -1,35 +1,35 @@
-/* 
- * Copyright 2017-2018, Redux Software. 
- * 
- * File: BasicAuthProvider.java
- * Date: Oct 30, 2017
- * Author: P7107311
- * URL: www.redux.com
-*/
-package com.upgrad.FoodOrderingApp.api.provider;
-
-import java.util.Base64;
-
 /**
  * Provider to decode basic auth credentials.
  */
-public final class BasicAuthDecoder {
+package com.upgrad.FoodOrderingApp.api.provider;
+
+import com.upgrad.FoodOrderingApp.service.exception.AuthenticationFailedException;
+
+import java.util.Base64;
+
+public class BasicAuthDecoder {
 
     private final String username;
     private final String password;
 
-    public BasicAuthDecoder(final String base64EncodedCredentials) {
-        final String[] base64Decoded = new String(Base64.getDecoder().decode(base64EncodedCredentials.split("Basic ")[1])).split(":");
-        this.username = base64Decoded[0];
-        this.password = base64Decoded[1];
+    public BasicAuthDecoder(final String base64EncodedCredential) throws AuthenticationFailedException {
+        final String[] decodedCredentials;
+        try {
+            decodedCredentials = new String(Base64.getDecoder().decode(base64EncodedCredential.split("Basic ")[1])).split(":");
+            username = decodedCredentials[0];
+            password = decodedCredentials[1];
+        }
+        catch (Exception exc) {
+            throw new AuthenticationFailedException("ATH-003", "Incorrect format of decoded customer name and password");
+        }
+
     }
 
     public String getUsername() {
-        return username;
+        return this.username;
     }
 
-    public String getPassword() {
-        return password;
+    public  String getPassword() {
+        return this.password;
     }
-
 }

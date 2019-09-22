@@ -112,7 +112,7 @@ public class OrderController {
 
             OrderListAddress orderListAddress = new OrderListAddress()
                     .id(UUID.fromString(orderEntity.getAddress().getUuid()))
-                    .flatBuildingName(orderEntity.getAddress().getFlatBuilNumber())
+                    .flatBuildingName(orderEntity.getAddress().getFlatBuilNo())
                     .locality(orderEntity.getAddress().getLocality())
                     .city(orderEntity.getAddress().getCity())
                     .pincode(orderEntity.getAddress().getPincode())

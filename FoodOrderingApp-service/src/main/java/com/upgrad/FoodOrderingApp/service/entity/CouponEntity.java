@@ -13,6 +13,7 @@ import java.util.UUID;
         @NamedQuery(name = "couponByCouponName", query = "select c from CouponEntity c where c.couponName = :couponName"),
         @NamedQuery(name = "couponByUUID", query = "select c from CouponEntity c where c.uuid = :couponId" )
 })
+
 public class CouponEntity implements Serializable {
 
     @Id
@@ -86,6 +87,5 @@ public class CouponEntity implements Serializable {
     public void setOrders(List<OrderEntity> orders) {
         this.orders = orders;
     }
-
 
 }

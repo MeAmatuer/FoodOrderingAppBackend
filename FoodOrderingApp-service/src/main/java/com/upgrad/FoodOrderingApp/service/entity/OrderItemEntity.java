@@ -7,8 +7,9 @@ import java.io.Serializable;
 @Entity
 @Table(name="order_item")
 @NamedQueries({
-        @NamedQuery(name = "itemsByOrder", query = "select q from OrderItemEntity q where q.orderId = :orderEntity"),
+        @NamedQuery(name = "itemsByOrder", query = "select q from OrderItemEntity q where q.orderId = :ordersEntity"),
 })
+
 public class OrderItemEntity implements Serializable {
 
     @Id
@@ -20,6 +21,7 @@ public class OrderItemEntity implements Serializable {
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="order_id")
     private OrderEntity orderId;
+
 
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="item_id")

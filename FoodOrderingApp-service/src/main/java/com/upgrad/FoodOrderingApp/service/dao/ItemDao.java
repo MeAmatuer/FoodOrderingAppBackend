@@ -1,5 +1,5 @@
 package com.upgrad.FoodOrderingApp.service.dao;
-
+import org.springframework.stereotype.Repository;
 import com.upgrad.FoodOrderingApp.service.entity.ItemEntity;
 import org.springframework.stereotype.Repository;
 
@@ -21,9 +21,18 @@ public class ItemDao {
                     .setParameter("itemId", itemId)
                     .getSingleResult();
             return itemEntity;
-        }catch (NoResultException nre){
+        } catch (NoResultException nre) {
             return null;
         }
+    }
+    //This method returns Item details based on the input id parameter
 
+
+    public ItemEntity getItemByUUID(String uuid) {
+        try {
+            return entityManager.createNamedQuery("itemByUUID", ItemEntity.class).setParameter("uuid", uuid).getSingleResult();
+        } catch (NoResultException nre) {
+            return null;
+        }
     }
 }

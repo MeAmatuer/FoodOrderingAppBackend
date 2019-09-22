@@ -7,9 +7,11 @@ import java.io.Serializable;
 @Entity
 @Table(name="customer_address")
 @NamedQueries({
-        @NamedQuery(name = "getAllCustomerAddressByCustomer",query = "SELECT c from CustomerAddressEntity c where c.customer = :customer_entity"),
-        @NamedQuery(name = "getCustomerAddressByAddress",query = "SELECT c from CustomerAddressEntity c where c.address = :address_entity")
+        @NamedQuery(name = "getAddressesByCustomer", query = "SELECT cae FROM CustomerAddressEntity cae WHERE cae.customer = :customer"),
+        @NamedQuery(name = "customerAddressByAddress", query = "SELECT cae FROM CustomerAddressEntity cae WHERE cae.address = :address")
 })
+
+
 public class CustomerAddressEntity implements Serializable {
 
     @Id
@@ -50,6 +52,7 @@ public class CustomerAddressEntity implements Serializable {
         this.address = address;
     }
 
-    public CustomerAddressEntity() {
+  public CustomerAddressEntity() {
     }
+
 }
