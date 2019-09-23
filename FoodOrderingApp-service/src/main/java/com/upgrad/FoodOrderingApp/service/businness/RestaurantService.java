@@ -9,6 +9,8 @@ import com.upgrad.FoodOrderingApp.service.exception.InvalidRatingException;
 import com.upgrad.FoodOrderingApp.service.exception.RestaurantNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -80,6 +82,7 @@ public class RestaurantService {
     //This method updates the restaurant ratings if its satisfies the criterion of input rating must be
     //between 1 to 5 recalculates the average rating updates the rating and number of customers rated
     //and returns the updated restaurant details
+    @Transactional(propagation = Propagation.REQUIRED)
     public RestaurantEntity updateRestaurantRating(RestaurantEntity restaurantEntity, Double newRating)
             throws InvalidRatingException {
         if (newRating < 1.0 || newRating > 5.0) {
